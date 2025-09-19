@@ -1,0 +1,2533 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxe Hair Salon | Booking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #d4af37;
+            --secondary: #8a6d3b;
+            --dark: #333333;
+            --light: #f9f9f9;
+            --gray: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+            padding: 2rem;
+        }
+
+        .login-form, .register-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-form h2, .register-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-size: 2rem;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--primary);
+        }
+
+        .user-type {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-type.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-info {
+            background: var(--info);
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.9rem;
+            display: inline-block;
+            width: auto;
+        }
+
+        /* Main App Styles (after login) */
+        .app-container {
+            display: none;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--dark), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .user-info i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 1rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .dashboard-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card p {
+            color: var(--gray);
+        }
+
+        /* Salon Owner View */
+        .owner-view {
+            display: none;
+        }
+
+        /* Customer View */
+        .customer-view {
+            display: none;
+        }
+
+        /* Stylist View */
+        .stylist-view {
+            display: none;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-img {
+            height: 200px;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .service-content {
+            padding: 1.5rem;
+        }
+
+        .service-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .service-content p {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .service-content .price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .stylists {
+            background-color: var(--light);
+        }
+
+        .stylist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stylist-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stylist-img {
+            height: 250px;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .stylist-content {
+            padding: 1.5rem;
+        }
+
+        .stylist-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .stylist-content p {
+            color: var(--gray);
+        }
+
+        .booking {
+            background: white;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .booking-form {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .notification.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .notification.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .booking-image {
+            text-align: center;
+        }
+
+        .booking-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Customer Dashboard */
+        .customer-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .appointments-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointment-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .appointment-info p {
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Owner Dashboard */
+        .owner-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .upcoming-appointments {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Stylist Dashboard */
+        .stylist-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .pending-requests {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .request-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .request-card p {
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .request-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        /* Customer Details Section for Stylist */
+        .customer-details {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .customer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .info-item h4 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .info-item p {
+            color: var(--gray);
+        }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .notifications-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-header h3 {
+            margin: 0;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+
+        .notification-item.unread {
+            background: #f0f7ff;
+        }
+
+        .notification-item p {
+            margin: 0;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .notifications-badge {
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links a {
+            color: white;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .booking-container, .customer-dashboard, .owner-dashboard, .stylist-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .notifications-panel {
+                width: 90%;
+                right: 5%;
+                left: 5%;
+            }
+            
+            .customer-info {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .user-info {
+                margin: 1rem 0;
+            }
+            
+            .login-form, .register-form {
+                padding: 1.5rem;
+            }
+        }
+
+        /* New styles for customer data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .data-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .public-view {
+            display: block;
+        }
+
+        .public-nav {
+            background: linear-gradient(to right, var(--dark), var(--secondary));
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .public-nav .logo {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .public-nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+        }
+
+        .public-nav .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .login-link {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Public View (No Login Required) -->
+    <div class="public-view" id="public-view">
+        <nav class="public-nav">
+            <div class="logo">
+                <i class="fas fa-spa"></i>
+                <span>Luxe Hair Salon</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#stylists">Stylists</a>
+                <a href="#booking">Book Now</a>
+                <a href="#" id="show-login-page">Login</a>
+            </div>
+        </nav>
+
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Luxe Hair Salon</h1>
+                <p>Experience premium hair care services with our expert stylists</p>
+                <a href="#booking" class="btn">Book Appointment</a>
+            </div>
+        </section>
+
+        <section id="services" class="container">
+            <div class="section-title">
+                <h2>Our Services</h2>
+                <p>We offer a wide range of hair care services to make you look your best</p>
+            </div>
+            <div class="services">
+                <div class="service-card">
+                    <div class="service-img">
+                        <i class="fas fa-cut"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3>Haircut & Styling</h3>
+                        <p>Professional haircut and styling tailored to your preferences</p>
+                        <p class="price">$50</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3>Hair Coloring</h3>
+                        <p>Expert hair coloring services with premium products</p>
+                        <p class="price">$120</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3>Hair Treatment</h3>
+                        <p>Revitalizing hair treatments for damaged hair</p>
+                        <p class="price">$85</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stylists" class="stylists">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Our Stylists</h2>
+                    <p>Meet our talented team of professional hairstylists</p>
+                </div>
+                <div class="stylist-grid" id="public-stylists-list">
+                    <!-- Stylists will be added here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <section id="booking" class="booking">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Book Your Appointment</h2>
+                    <p>Fill out the form below to request an appointment with your preferred stylist</p>
+                </div>
+                <div class="booking-container">
+                    <div class="booking-form">
+                        <div class="notification success" id="public-booking-success">
+                            Thank you! Your appointment request has been sent. Your stylist will notify you once it's confirmed.
+                        </div>
+                        <div class="notification info" id="public-booking-info">
+                            Please complete all fields to book an appointment.
+                        </div>
+                        <form id="public-appointment-form">
+                            <div class="form-group">
+                                <label for="public-booking-name">Your Name</label>
+                                <input type="text" id="public-booking-name" class="form-control" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-email">Email Address</label>
+                                <input type="email" id="public-booking-email" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-phone">Phone Number</label>
+                                <input type="tel" id="public-booking-phone" class="form-control" placeholder="Enter your phone number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-service">Select Service</label>
+                                <select id="public-booking-service" class="form-control" required>
+                                    <option value="">Choose a service</option>
+                                    <option value="haircut">Haircut & Styling - $50</option>
+                                    <option value="coloring">Hair Coloring - $120</option>
+                                    <option value="treatment">Hair Treatment - $85</option>
+                                    <option value="extension">Hair Extensions - $200</option>
+                                    <option value="updo">Special Occasion Updo - $75</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-stylist">Preferred Stylist</label>
+                                <select id="public-booking-stylist" class="form-control" required>
+                                    <option value="">Choose a stylist</option>
+                                    <!-- Stylists will be populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-date">Preferred Date</label>
+                                <input type="date" id="public-booking-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-time">Preferred Time</label>
+                                <input type="time" id="public-booking-time" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-booking-notes">Additional Notes</label>
+                                <textarea id="public-booking-notes" class="form-control" rows="3" placeholder="Any special requests?"></textarea>
+                            </div>
+                            <button type="submit" class="btn">Request Appointment</button>
+                        </form>
+                    </div>
+                    <div class="booking-image">
+                        <div style="background-color: #d4af37; height: 100%; width: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                            <i class="fas fa-calendar-check" style="font-size: 5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Luxe Hair Salon</h3>
+                        <p>123 Beauty Street, Glamour City</p>
+                        <p>Phone: (555) 123-4567</p>
+                        <p>Email: info@luxehairsalon.com</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Opening Hours</h3>
+                        <p>Monday-Friday: 9am - 8pm</p>
+                        <p>Saturday: 10am - 6pm</p>
+                        <p>Sunday: 11am - 4pm</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2023 Luxe Hair Salon. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Page -->
+    <div class="login-container" id="login-page" style="display: none;">
+        <div class="login-form" id="login-form">
+            <div class="login-logo">
+                <i class="fas fa-spa"></i>
+            </div>
+            <h2>Login to Luxe Salon</h2>
+            
+            <div class="user-type-selector">
+                <div class="user-type active" data-type="customer">Customer</div>
+                <div class="user-type" data-type="stylist">Stylist</div>
+                <div class="user-type" data-type="owner">Salon Owner</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password">
+            </div>
+            
+            <button class="btn" id="login-btn">Login</button>
+            
+            <p style="text-align: center; margin-top: 1.5rem;">
+                Don't have an account? <a href="#" style="color: var(--primary);" id="show-register">Sign up</a>
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="register-form" id="register-form" style="display: none;">
+            <div class="login-logo">
+                <i class="fas fa-spa"></i>
+            </div>
+            <h2>Create an Account</h2>
+            
+            <div class="user-type-selector">
+                <div class="user-type active" data-type="customer">Customer</div>
+                <div class="user-type" data-type="stylist">Stylist</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-name">Full Name</label>
+                <input type="text" id="register-name" class="form-control" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="register-email">Email Address</label>
+                <input type="email" id="register-email" class="form-control" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="register-phone">Phone Number</label>
+                <input type="tel" id="register-phone" class="form-control" placeholder="Enter your phone number">
+            </div>
+            
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" class="form-control" placeholder="Create a password">
+            </div>
+            
+            <div class="form-group">
+                <label for="register-confirm-password">Confirm Password</label>
+                <input type="password" id="register-confirm-password" class="form-control" placeholder="Confirm your password">
+            </div>
+            
+            <button class="btn" id="register-btn">Create Account</button>
+            
+            <p style="text-align: center; margin-top: 1.5rem;">
+                Already have an account? <a href="#" style="color: var(--primary);" id="show-login">Sign in</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Application (after login) -->
+    <div class="app-container" id="app-container">
+        <header>
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-spa"></i>
+                    <span>Luxe Hair Salon</span>
+                </div>
+            </div>
+            
+            <div class="user-info">
+                <i class="fas fa-user"></i>
+                <span id="user-display-name">Customer Name</span>
+                <div class="notifications-badge" id="notifications-icon" style="margin-left: 20px; cursor: pointer;">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notification-count" style="display: none;">0</span>
+                </div>
+            </div>
+            
+            <button class="logout-btn" id="logout-btn">Logout</button>
+        </header>
+
+        <!-- Notifications Panel -->
+        <div class="notifications-panel" id="notifications-panel">
+            <div class="notifications-header">
+                <h3>Notifications</h3>
+                <button class="close-modal" id="close-notifications"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="notifications-list">
+                <!-- Notifications will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Salon Owner View -->
+        <div class="owner-view" id="owner-view">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Salon Management Dashboard</h1>
+                    <p>Manage appointments, stylists, and salon operations</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard">
+                    <div class="dashboard-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3 id="today-appointments-count">0</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="stylists-count">0</h3>
+                        <p>Active Stylists</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3 id="today-revenue">$0</h3>
+                        <p>Today's Revenue</p>
+                    </div>
+                </div>
+
+                <div class="owner-dashboard">
+                    <div class="stats-card">
+                        <h3>Salon Statistics</h3>
+                        <div class="stat-item">
+                            <span>Total Appointments</span>
+                            <span id="total-appointments">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>New Customers</span>
+                            <span id="new-customers">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Revenue This Month</span>
+                            <span id="month-revenue">$0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Most Popular Service</span>
+                            <span id="popular-service">-</span>
+                        </div>
+                    </div>
+
+                    <div class="upcoming-appointments">
+                        <h3>Upcoming Appointments</h3>
+                        <div id="owner-appointments-list">
+                            <!-- Appointments will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Data Table for Owner -->
+                <div class="customer-details">
+                    <h3>All Customer Data</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Appointments</th>
+                                <th>Last Visit</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="owner-customers-table">
+                            <!-- Customer data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stylist View -->
+        <div class="stylist-view" id="stylist-view">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Stylist Dashboard</h1>
+                    <p>Manage your appointments and client requests</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard">
+                    <div class="dashboard-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3 id="stylist-today-appointments">0</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-clock"></i>
+                        <h3 id="pending-requests-count">0</h3>
+                        <p>Pending Requests</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <i class="fas fa-star"></i>
+                        <h3 id="stylist-rating">0</h3>
+                        <p>Average Rating</p>
+                    </div>
+                </div>
+
+                <div class="stylist-dashboard">
+                    <div class="profile-card">
+                        <div class="profile-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="stylist-name">Stylist Name</h3>
+                        <p id="stylist-specialty">Specialty</p>
+                        <div class="stat-item">
+                            <span>Appointments</span>
+                            <span id="stylist-total-appointments">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Clients</span>
+                            <span id="stylist-clients-count">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Rating</span>
+                            <span id="stylist-rating-value">0/5</span>
+                        </div>
+                    </div>
+
+                    <div class="pending-requests">
+                        <h3>Appointment Requests</h3>
+                        <div id="requests-list">
+                            <!-- Appointment requests will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Details Section for Stylist -->
+                <div class="customer-details">
+                    <h3>Your Clients</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Last Appointment</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stylist-customers-table">
+                            <!-- Customer data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer View -->
+        <div class="customer-view" id="customer-view">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Welcome to Luxe Hair Salon</h1>
+                    <p>Book your appointment online and get ready to experience the best hair services in town</p>
+                    <a href="#booking" class="btn btn-sm">Book Appointment</a>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="customer-dashboard">
+                    <div class="profile-card">
+                        <div class="profile-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="customer-name">Customer Name</h3>
+                        <p id="customer-membership">Membership Status</p>
+                        <div class="stat-item">
+                            <span>Appointments</span>
+                            <span id="customer-appointments-count">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Last Visit</span>
+                            <span id="customer-last-visit">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Favorite Service</span>
+                            <span id="customer-favorite-service">-</span>
+                        </div>
+                    </div>
+
+                    <div class="appointments-list">
+                        <h3>Your Appointments</h3>
+                        <div id="customer-appointments-list">
+                            <!-- Appointments will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="stylists">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Our Stylists</h2>
+                        <p>Meet our talented team of professional hairstylists</p>
+                    </div>
+                    <div class="stylist-grid" id="stylists-list">
+                        <!-- Stylists will be added here dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="booking" class="booking">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Book Your Appointment</h2>
+                        <p>Fill out the form below to request an appointment with your preferred stylist</p>
+                    </div>
+                    <div class="booking-container">
+                        <div class="booking-form">
+                            <div class="notification success" id="booking-success">
+                                Thank you! Your appointment request has been sent. Your stylist will notify you once it's confirmed.
+                            </div>
+                            <div class="notification info" id="booking-info">
+                                Please complete all fields to book an appointment.
+                            </div>
+                            <form id="appointment-form">
+                                <div class="form-group">
+                                    <label for="booking-name">Your Name</label>
+                                    <input type="text" id="booking-name" class="form-control" placeholder="Enter your name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-email">Email Address</label>
+                                    <input type="email" id="booking-email" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-phone">Phone Number</label>
+                                    <input type="tel" id="booking-phone" class="form-control" placeholder="Enter your phone number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-service">Select Service</label>
+                                    <select id="booking-service" class="form-control" required>
+                                        <option value="">Choose a service</option>
+                                        <option value="haircut">Haircut & Styling - $50</option>
+                                        <option value="coloring">Hair Coloring - $120</option>
+                                        <option value="treatment">Hair Treatment - $85</option>
+                                        <option value="extension">Hair Extensions - $200</option>
+                                        <option value="updo">Special Occasion Updo - $75</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-stylist">Preferred Stylist</label>
+                                    <select id="booking-stylist" class="form-control" required>
+                                        <option value="">Choose a stylist</option>
+                                        <!-- Stylists will be populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-date">Preferred Date</label>
+                                    <input type="date" id="booking-date" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-time">Preferred Time</label>
+                                    <input type="time" id="booking-time" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="booking-notes">Additional Notes</label>
+                                    <textarea id="booking-notes" class="form-control" rows="3" placeholder="Any special requests?"></textarea>
+                                </div>
+                                <button type="submit" class="btn">Request Appointment</button>
+                            </form>
+                        </div>
+                        <div class="booking-image">
+                            <div style="background-color: #d4af37; height: 100%; width: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                                <i class="fas fa-calendar-check" style="font-size: 5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Luxe Hair Salon</h3>
+                        <p>123 Beauty Street, Glamour City</p>
+                        <p>Phone: (555) 123-4567</p>
+                        <p>Email: info@luxehairsalon.com</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Opening Hours</h3>
+                        <p>Monday-Friday: 9am - 8pm</p>
+                        <p>Saturday: 10am - 6pm</p>
+                        <p>Sunday: 11am - 4pm</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2023 Luxe Hair Salon. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const publicView = document.getElementById('public-view');
+        const loginPage = document.getElementById('login-page');
+        const appContainer = document.getElementById('app-container');
+        const ownerView = document.getElementById('owner-view');
+        const stylistView = document.getElementById('stylist-view');
+        const customerView = document.getElementById('customer-view');
+        const userTypeElements = document.querySelectorAll('.user-type');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const showRegisterBtn = document.getElementById('show-register');
+        const showLoginBtn = document.getElementById('show-login');
+        const registerBtn = document.getElementById('register-btn');
+        const userDisplayName = document.getElementById('user-display-name');
+        const customerName = document.getElementById('customer-name');
+        const stylistName = document.getElementById('stylist-name');
+        const notificationsIcon = document.getElementById('notifications-icon');
+        const notificationsPanel = document.getElementById('notifications-panel');
+        const closeNotificationsBtn = document.getElementById('close-notifications');
+        const notificationCount = document.getElementById('notification-count');
+        const notificationsList = document.getElementById('notifications-list');
+        const showLoginPageBtn = document.getElementById('show-login-page');
+
+        // Current user
+        let currentUser = null;
+
+        // Initialize data
+        initializeData();
+
+        // Show login page from public view
+        showLoginPageBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            publicView.style.display = 'none';
+            loginPage.style.display = 'flex';
+        });
+
+        // Set user type selection
+        userTypeElements.forEach(element => {
+            element.addEventListener('click', function() {
+                const parent = this.closest('.user-type-selector');
+                parent.querySelectorAll('.user-type').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Toggle between login and register forms
+        showRegisterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        });
+
+        showLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        });
+
+        // Login functionality
+        loginBtn.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.querySelector('#login-form .user-type.active').getAttribute('data-type');
+            
+            // Simple validation
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            // Check credentials
+            const users = getUsers();
+            
+            // For stylists, check shared credentials
+            let user;
+            if (userType === 'stylist') {
+                user = users.find(u => u.type === 'stylist' && password === 'stylist123');
+            } else {
+                user = users.find(u => u.email === email && u.password === password && u.type === userType);
+            }
+            
+            if (user) {
+                currentUser = user;
+                showApp();
+            } else {
+                alert('Invalid login credentials. Please try again.');
+            }
+        });
+
+        // Register functionality
+        registerBtn.addEventListener('click', function() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const userType = document.querySelector('#register-form .user-type.active').getAttribute('data-type');
+            
+            // Validation
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = getUsers();
+            if (users.some(u => u.email === email)) {
+                alert('User with this email already exists');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                phone,
+                password,
+                type: userType,
+                joinDate: new Date().toISOString()
+            };
+            
+            if (userType === 'stylist') {
+                newUser.specialty = 'Hair Stylist';
+                newUser.rating = 4.5;
+                newUser.appointments = 0;
+                newUser.clients = [];
+            }
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('Account created successfully! You can now login.');
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            currentUser = null;
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'none';
+            publicView.style.display = 'block';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        });
+
+        // Notifications functionality
+        notificationsIcon.addEventListener('click', function() {
+            notificationsPanel.style.display = 'block';
+            loadNotifications();
+        });
+
+        closeNotificationsBtn.addEventListener('click', function() {
+            notificationsPanel.style.display = 'none';
+        });
+
+        // Set minimum date to today for booking
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('booking-date').setAttribute('min', today);
+        document.getElementById('public-booking-date').setAttribute('min', today);
+
+        // Handle booking form submission
+        document.getElementById('appointment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('booking-name').value;
+            const email = document.getElementById('booking-email').value;
+            const phone = document.getElementById('booking-phone').value;
+            const service = document.getElementById('booking-service').value;
+            const serviceText = document.getElementById('booking-service').options[document.getElementById('booking-service').selectedIndex].text;
+            const stylist = document.getElementById('booking-stylist').value;
+            const stylistText = document.getElementById('booking-stylist').options[document.getElementById('booking-stylist').selectedIndex].text;
+            const date = document.getElementById('booking-date').value;
+            const time = document.getElementById('booking-time').value;
+            const notes = document.getElementById('booking-notes').value;
+            
+            // Create appointment request object
+            const appointmentRequest = {
+                id: Date.now(),
+                customerId: currentUser.id,
+                name,
+                email,
+                phone,
+                service,
+                serviceText,
+                stylist,
+                stylistText,
+                date,
+                time,
+                notes,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to appointment requests
+            const appointments = getAppointments();
+            appointments.push(appointmentRequest);
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            
+            // Create notification for stylist
+            const users = getUsers();
+            const stylistUser = users.find(u => u.id === stylist);
+            if (stylistUser) {
+                const notification = {
+                    id: Date.now(),
+                    userId: stylist,
+                    type: 'appointment_request',
+                    title: 'New Appointment Request',
+                    message: `${name} has requested a ${serviceText} appointment on ${date} at ${time}`,
+                    timestamp: new Date().toISOString(),
+                    read: false,
+                    appointmentId: appointmentRequest.id
+                };
+                addNotification(notification);
+            }
+            
+            // Show success notification
+            document.getElementById('booking-success').style.display = 'block';
+            document.getElementById('booking-info').style.display = 'none';
+            
+            // Reset the form
+            document.getElementById('appointment-form').reset();
+        });
+
+        // Handle public booking form submission (no login required)
+        document.getElementById('public-appointment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('public-booking-name').value;
+            const email = document.getElementById('public-booking-email').value;
+            const phone = document.getElementById('public-booking-phone').value;
+            const service = document.getElementById('public-booking-service').value;
+            const serviceText = document.getElementById('public-booking-service').options[document.getElementById('public-booking-service').selectedIndex].text;
+            const stylist = document.getElementById('public-booking-stylist').value;
+            const stylistText = document.getElementById('public-booking-stylist').options[document.getElementById('public-booking-stylist').selectedIndex].text;
+            const date = document.getElementById('public-booking-date').value;
+            const time = document.getElementById('public-booking-time').value;
+            const notes = document.getElementById('public-booking-notes').value;
+            
+            // Create a temporary customer ID for non-logged in users
+            const tempCustomerId = 'temp_' + Date.now();
+            
+            // Create appointment request object
+            const appointmentRequest = {
+                id: Date.now(),
+                customerId: tempCustomerId,
+                name,
+                email,
+                phone,
+                service,
+                serviceText,
+                stylist,
+                stylistText,
+                date,
+                time,
+                notes,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to appointment requests
+            const appointments = getAppointments();
+            appointments.push(appointmentRequest);
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            
+            // Create notification for stylist
+            const users = getUsers();
+            const stylistUser = users.find(u => u.id === stylist);
+            if (stylistUser) {
+                const notification = {
+                    id: Date.now(),
+                    userId: stylist,
+                    type: 'appointment_request',
+                    title: 'New Appointment Request',
+                    message: `${name} has requested a ${serviceText} appointment on ${date} at ${time}`,
+                    timestamp: new Date().toISOString(),
+                    read: false,
+                    appointmentId: appointmentRequest.id
+                };
+                addNotification(notification);
+            }
+            
+            // Show success notification
+            document.getElementById('public-booking-success').style.display = 'block';
+            document.getElementById('public-booking-info').style.display = 'none';
+            
+            // Reset the form
+            document.getElementById('public-appointment-form').reset();
+            
+            // Scroll to top to show success message
+            window.scrollTo(0, 0);
+        });
+
+        // Initialize data
+        function initializeData() {
+            // Initialize default users if not exists
+            if (!localStorage.getItem('users')) {
+                const defaultUsers = [
+                    {
+                        id: '1',
+                        name: 'Salon Owner',
+                        email: 'owner@luxesalon.com',
+                        password: 'owner123',
+                        type: 'owner',
+                        phone: '(555) 123-4567'
+                    },
+                    {
+                        id: '2',
+                        name: 'Emma Wilson',
+                        email: 'emma@luxesalon.com',
+                        password: 'stylist123',
+                        type: 'stylist',
+                        specialty: 'Senior Stylist & Color Specialist',
+                        rating: 4.9,
+                        appointments: 0,
+                        clients: [],
+                        phone: '(555) 123-4567'
+                    },
+                    {
+                        id: '3',
+                        name: 'Michael Brown',
+                        email: 'michael@luxesalon.com',
+                        password: 'stylist123',
+                        type: 'stylist',
+                        specialty: 'Master Barber & Stylist',
+                        rating: 4.7,
+                        appointments: 0,
+                        clients: [],
+                        phone: '(555) 123-4567'
+                    },
+                    {
+                        id: '4',
+                        name: 'Sophia Davis',
+                        email: 'sophia@luxesalon.com',
+                        password: 'stylist123',
+                        type: 'stylist',
+                        specialty: 'Hair Treatment Expert',
+                        rating: 4.8,
+                        appointments: 0,
+                        clients: [],
+                        phone: '(555) 123-4567'
+                    }
+                ];
+                localStorage.setItem('users', JSON.stringify(defaultUsers));
+            }
+            
+            // Initialize default appointments if not exists
+            if (!localStorage.getItem('appointments')) {
+                localStorage.setItem('appointments', JSON.stringify([]));
+            }
+            
+            // Initialize notifications if not exists
+            if (!localStorage.getItem('notifications')) {
+                localStorage.setItem('notifications', JSON.stringify([]));
+            }
+            
+            // Populate stylists in booking forms
+            populateStylists();
+            populatePublicStylists();
+            
+            // Load public view content
+            loadPublicView();
+        }
+
+        // Get users from localStorage
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        }
+
+        // Get appointments from localStorage
+        function getAppointments() {
+            return JSON.parse(localStorage.getItem('appointments')) || [];
+        }
+
+        // Get notifications from localStorage
+        function getNotifications() {
+            return JSON.parse(localStorage.getItem('notifications')) || [];
+        }
+
+        // Add notification
+        function addNotification(notification) {
+            const notifications = getNotifications();
+            notifications.push(notification);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+            
+            // Update notification badge
+            updateNotificationBadge();
+        }
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            if (!currentUser) return;
+            
+            const notifications = getNotifications();
+            const userNotifications = notifications.filter(n => n.userId === currentUser.id && !n.read);
+            notificationCount.textContent = userNotifications.length;
+            notificationCount.style.display = userNotifications.length > 0 ? 'flex' : 'none';
+        }
+
+        // Load notifications
+        function loadNotifications() {
+            if (!currentUser) return;
+            
+            const notifications = getNotifications();
+            const userNotifications = notifications.filter(n => n.userId === currentUser.id).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            notificationsList.innerHTML = '';
+            
+            if (userNotifications.length === 0) {
+                notificationsList.innerHTML = '<p class="notification-item">No notifications</p>';
+                return;
+            }
+            
+            userNotifications.forEach(notification => {
+                const notificationEl = document.createElement('div');
+                notificationEl.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                notificationEl.innerHTML = `
+                    <p><strong>${notification.title}</strong></p>
+                    <p>${notification.message}</p>
+                    <p class="notification-time">${formatDate(notification.timestamp)}</p>
+                `;
+                
+                notificationEl.addEventListener('click', function() {
+                    // Mark as read
+                    if (!notification.read) {
+                        notification.read = true;
+                        localStorage.setItem('notifications', JSON.stringify(notifications));
+                        updateNotificationBadge();
+                        notificationEl.classList.remove('unread');
+                    }
+                });
+                
+                notificationsList.appendChild(notificationEl);
+            });
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // Populate stylists in booking form
+        function populateStylists() {
+            const stylistSelect = document.getElementById('booking-stylist');
+            const users = getUsers();
+            const stylists = users.filter(u => u.type === 'stylist');
+            
+            // Clear existing options except the first one
+            while (stylistSelect.options.length > 1) {
+                stylistSelect.remove(1);
+            }
+            
+            // Add stylists to select
+            stylists.forEach(stylist => {
+                const option = document.createElement('option');
+                option.value = stylist.id;
+                option.textContent = stylist.name + ' - ' + stylist.specialty;
+                stylistSelect.appendChild(option);
+            });
+        }
+
+        // Populate stylists in public booking form
+        function populatePublicStylists() {
+            const stylistSelect = document.getElementById('public-booking-stylist');
+            const users = getUsers();
+            const stylists = users.filter(u => u.type === 'stylist');
+            
+            // Clear existing options except the first one
+            while (stylistSelect.options.length > 1) {
+                stylistSelect.remove(1);
+            }
+            
+            // Add stylists to select
+            stylists.forEach(stylist => {
+                const option = document.createElement('option');
+                option.value = stylist.id;
+                option.textContent = stylist.name + ' - ' + stylist.specialty;
+                stylistSelect.appendChild(option);
+            });
+        }
+
+        // Load public view content
+        function loadPublicView() {
+            const users = getUsers();
+            const stylists = users.filter(u => u.type === 'stylist');
+            const stylistsList = document.getElementById('public-stylists-list');
+            stylistsList.innerHTML = '';
+            
+            stylists.forEach(stylist => {
+                const stylistEl = document.createElement('div');
+                stylistEl.className = 'stylist-card';
+                stylistEl.innerHTML = `
+                    <div class="stylist-img"><i class="fas fa-user"></i></div>
+                    <div class="stylist-content">
+                        <h3>${stylist.name}</h3>
+                        <p>${stylist.specialty || 'Hair Stylist'}</p>
+                        <p>Rating: ${stylist.rating}/5</p>
+                    </div>
+                `;
+                stylistsList.appendChild(stylistEl);
+            });
+        }
+
+        // Show the main application based on user type
+        function showApp() {
+            publicView.style.display = 'none';
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'block';
+            
+            userDisplayName.textContent = currentUser.name;
+            
+            // Hide all views first
+            ownerView.style.display = 'none';
+            stylistView.style.display = 'none';
+            customerView.style.display = 'none';
+            
+            // Show the appropriate view based on user type
+            if (currentUser.type === 'owner') {
+                ownerView.style.display = 'block';
+                loadOwnerDashboard();
+            } else if (currentUser.type === 'stylist') {
+                stylistView.style.display = 'block';
+                loadStylistDashboard();
+            } else {
+                customerView.style.display = 'block';
+                loadCustomerDashboard();
+            }
+            
+            // Update notification badge
+            updateNotificationBadge();
+        }
+
+        // Load owner dashboard
+        function loadOwnerDashboard() {
+            const appointments = getAppointments();
+            const users = getUsers();
+            const stylists = users.filter(u => u.type === 'stylist');
+            const customers = users.filter(u => u.type === 'customer');
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayAppointments = appointments.filter(a => a.date === today && a.status === 'confirmed');
+            const monthAppointments = appointments.filter(a => {
+                const appointmentDate = new Date(a.date);
+                const now = new Date();
+                return appointmentDate.getMonth() === now.getMonth() && 
+                       appointmentDate.getFullYear() === now.getFullYear() &&
+                       a.status === 'confirmed';
+            });
+            
+            // Calculate revenue
+            const servicePrices = {
+                'haircut': 50,
+                'coloring': 120,
+                'treatment': 85,
+                'extension': 200,
+                'updo': 75
+            };
+            
+            const todayRevenue = todayAppointments.reduce((total, appointment) => {
+                return total + (servicePrices[appointment.service] || 0);
+            }, 0);
+            
+            const monthRevenue = monthAppointments.reduce((total, appointment) => {
+                return total + (servicePrices[appointment.service] || 0);
+            }, 0);
+            
+            // Update dashboard stats
+            document.getElementById('today-appointments-count').textContent = todayAppointments.length;
+            document.getElementById('stylists-count').textContent = stylists.length;
+            document.getElementById('today-revenue').textContent = '$' + todayRevenue;
+            document.getElementById('total-appointments').textContent = appointments.filter(a => a.status === 'confirmed').length;
+            document.getElementById('new-customers').textContent = customers.length;
+            document.getElementById('month-revenue').textContent = '$' + monthRevenue;
+            
+            // Find most popular service
+            const serviceCounts = {};
+            appointments.forEach(appointment => {
+                if (appointment.status === 'confirmed') {
+                    serviceCounts[appointment.service] = (serviceCounts[appointment.service] || 0) + 1;
+                }
+            });
+            
+            let popularService = '-';
+            let maxCount = 0;
+            for (const service in serviceCounts) {
+                if (serviceCounts[service] > maxCount) {
+                    maxCount = serviceCounts[service];
+                    popularService = service;
+                }
+            }
+            
+            document.getElementById('popular-service').textContent = popularService !== '-' ? 
+                popularService.charAt(0).toUpperCase() + popularService.slice(1) : '-';
+            
+            // Load upcoming appointments
+            const upcomingAppointments = appointments
+                .filter(a => a.status === 'confirmed')
+                .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
+                .slice(0, 5);
+            
+            const appointmentsList = document.getElementById('owner-appointments-list');
+            appointmentsList.innerHTML = '';
+            
+            if (upcomingAppointments.length === 0) {
+                appointmentsList.innerHTML = '<p>No upcoming appointments</p>';
+                return;
+            }
+            
+            upcomingAppointments.forEach(appointment => {
+                const appointmentEl = document.createElement('div');
+                appointmentEl.className = 'appointment-card';
+                appointmentEl.innerHTML = `
+                    <div class="appointment-info">
+                        <h3>${appointment.serviceText} with ${appointment.stylistText}</h3>
+                        <p><strong>Client:</strong> ${appointment.name}</p>
+                        <p><strong>Time:</strong> ${appointment.date} at ${appointment.time}</p>
+                    </div>
+                    <div class="appointment-status">
+                        <span class="status-badge status-${appointment.status}">${appointment.status}</span>
+                    </div>
+                `;
+                appointmentsList.appendChild(appointmentEl);
+            });
+            
+            // Load customer data table
+            loadOwnerCustomerTable();
+        }
+
+        // Load customer data table for owner
+        function loadOwnerCustomerTable() {
+            const appointments = getAppointments();
+            const users = getUsers();
+            const customers = users.filter(u => u.type === 'customer');
+            const customerTable = document.getElementById('owner-customers-table');
+            customerTable.innerHTML = '';
+            
+            if (customers.length === 0) {
+                customerTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No customers found</td></tr>';
+                return;
+            }
+            
+            customers.forEach(customer => {
+                const customerAppointments = appointments.filter(a => a.customerId === customer.id);
+                const lastAppointment = customerAppointments.length > 0 
+                    ? customerAppointments.sort((a, b) => new Date(b.date) - new Date(a.date))[0] 
+                    : null;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customerAppointments.length}</td>
+                    <td>${lastAppointment ? lastAppointment.date : 'Never'}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-info view-customer" data-id="${customer.id}">View</button>
+                        <button class="btn btn-sm btn-danger delete-customer" data-id="${customer.id}">Delete</button>
+                    </td>
+                `;
+                customerTable.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-customer').forEach(button => {
+                button.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    viewCustomerDetails(customerId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-customer').forEach(button => {
+                button.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    deleteCustomer(customerId);
+                });
+            });
+        }
+
+        // View customer details
+        function viewCustomerDetails(customerId) {
+            const users = getUsers();
+            const appointments = getAppointments();
+            const customer = users.find(u => u.id == customerId);
+            
+            if (customer) {
+                const customerAppointments = appointments.filter(a => a.customerId == customerId);
+                alert(`Customer Details:\nName: ${customer.name}\nEmail: ${customer.email}\nPhone: ${customer.phone}\nTotal Appointments: ${customerAppointments.length}`);
+            }
+        }
+
+        // Delete customer
+        function deleteCustomer(customerId) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                const users = getUsers();
+                const updatedUsers = users.filter(u => u.id != customerId);
+                localStorage.setItem('users', JSON.stringify(updatedUsers));
+                
+                // Also remove customer's appointments
+                const appointments = getAppointments();
+                const updatedAppointments = appointments.filter(a => a.customerId != customerId);
+                localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+                
+                alert('Customer deleted successfully');
+                loadOwnerCustomerTable();
+            }
+        }
+
+        // Load stylist dashboard
+        function loadStylistDashboard() {
+            stylistName.textContent = currentUser.name;
+            document.getElementById('stylist-specialty').textContent = currentUser.specialty || 'Hair Stylist';
+            
+            const appointments = getAppointments();
+            const users = getUsers();
+            const today = new Date().toISOString().split('T')[0];
+            
+            const stylistAppointments = appointments.filter(a => a.stylist === currentUser.id && a.status === 'confirmed');
+            const todayAppointments = appointments.filter(a => 
+                a.stylist === currentUser.id && 
+                a.date === today && 
+                a.status === 'confirmed'
+            );
+            
+            const pendingRequests = appointments.filter(a => 
+                a.stylist === currentUser.id && 
+                a.status === 'pending'
+            );
+            
+            // Get unique clients
+            const clientIds = [...new Set(stylistAppointments.map(a => a.customerId))];
+            
+            document.getElementById('stylist-total-appointments').textContent = stylistAppointments.length;
+            document.getElementById('stylist-clients-count').textContent = clientIds.length;
+            document.getElementById('stylist-rating-value').textContent = (currentUser.rating || 0) + '/5';
+            document.getElementById('stylist-today-appointments').textContent = todayAppointments.length;
+            document.getElementById('pending-requests-count').textContent = pendingRequests.length;
+            document.getElementById('stylist-rating').textContent = currentUser.rating || 0;
+            
+            // Load appointment requests
+            const requestsList = document.getElementById('requests-list');
+            requestsList.innerHTML = '';
+            
+            if (pendingRequests.length === 0) {
+                requestsList.innerHTML = '<p>No pending appointment requests</p>';
+                return;
+            }
+            
+            pendingRequests.forEach(request => {
+                const requestEl = document.createElement('div');
+                requestEl.className = 'request-card';
+                requestEl.innerHTML = `
+                    <h3>${request.serviceText}</h3>
+                    <p><strong>Client:</strong> ${request.name}</p>
+                    <p><strong>Date:</strong> ${request.date} at ${request.time}</p>
+                    <p><strong>Notes:</strong> ${request.notes || 'None'}</p>
+                    <div class="request-actions">
+                        <button class="btn btn-success btn-sm approve-request" data-id="${request.id}">Approve</button>
+                        <button class="btn btn-danger btn-sm decline-request" data-id="${request.id}">Decline</button>
+                    </div>
+                `;
+                requestsList.appendChild(requestEl);
+            });
+            
+            // Add event listeners to approve/decline buttons
+            document.querySelectorAll('.approve-request').forEach(button => {
+                button.addEventListener('click', function() {
+                    const appointmentId = this.getAttribute('data-id');
+                    updateAppointmentStatus(appointmentId, 'confirmed');
+                });
+            });
+            
+            document.querySelectorAll('.decline-request').forEach(button => {
+                button.addEventListener('click', function() {
+                    const appointmentId = this.getAttribute('data-id');
+                    updateAppointmentStatus(appointmentId, 'rejected');
+                });
+            });
+            
+            // Load customer details for stylist
+            loadStylistCustomerTable();
+        }
+
+        // Load customer data table for stylist
+        function loadStylistCustomerTable() {
+            const appointments = getAppointments();
+            const customerTable = document.getElementById('stylist-customers-table');
+            customerTable.innerHTML = '';
+            
+            // Get all appointments for this stylist
+            const stylistAppointments = appointments.filter(a => a.stylist === currentUser.id);
+            
+            // Get unique customer IDs
+            const customerIds = [...new Set(stylistAppointments.map(a => a.customerId))];
+            
+            if (customerIds.length === 0) {
+                customerTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No customers found</td></tr>';
+                return;
+            }
+            
+            customerIds.forEach(customerId => {
+                // For non-registered customers (from public bookings)
+                if (customerId.startsWith('temp_')) {
+                    const customerAppointments = appointments.filter(a => a.customerId === customerId && a.stylist === currentUser.id);
+                    const lastAppointment = customerAppointments.length > 0 
+                        ? customerAppointments.sort((a, b) => new Date(b.date) - new Date(a.date))[0] 
+                        : null;
+                    
+                    if (lastAppointment) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${lastAppointment.name}</td>
+                            <td>${lastAppointment.email}</td>
+                            <td>${lastAppointment.phone}</td>
+                            <td>${lastAppointment ? lastAppointment.date : 'Never'}</td>
+                            <td><span class="status-badge status-${lastAppointment.status}">${lastAppointment.status}</span></td>
+                            <td class="action-buttons">
+                                <button class="btn btn-sm btn-info view-customer" data-id="${customerId}">View</button>
+                                <button class="btn btn-sm btn-danger delete-customer" data-id="${customerId}">Delete</button>
+                            </td>
+                        `;
+                        customerTable.appendChild(row);
+                    }
+                } else {
+                    // For registered customers
+                    const users = getUsers();
+                    const customer = users.find(u => u.id == customerId);
+                    
+                    if (customer) {
+                        const customerAppointments = appointments.filter(a => a.customerId === customerId && a.stylist === currentUser.id);
+                        const lastAppointment = customerAppointments.length > 0 
+                            ? customerAppointments.sort((a, b) => new Date(b.date) - new Date(a.date))[0] 
+                            : null;
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${customer.name}</td>
+                            <td>${customer.email}</td>
+                            <td>${customer.phone}</td>
+                            <td>${lastAppointment ? lastAppointment.date : 'Never'}</td>
+                            <td><span class="status-badge status-${lastAppointment ? lastAppointment.status : 'none'}">${lastAppointment ? lastAppointment.status : 'None'}</span></td>
+                            <td class="action-buttons">
+                                <button class="btn btn-sm btn-info view-customer" data-id="${customerId}">View</button>
+                                <button class="btn btn-sm btn-danger delete-customer" data-id="${customerId}">Delete</button>
+                            </td>
+                        `;
+                        customerTable.appendChild(row);
+                    }
+                }
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-customer').forEach(button => {
+                button.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    viewCustomerDetails(customerId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-customer').forEach(button => {
+                button.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    deleteCustomer(customerId);
+                });
+            });
+        }
+
+        // Update appointment status
+        function updateAppointmentStatus(appointmentId, status) {
+            const appointments = getAppointments();
+            const appointment = appointments.find(a => a.id == appointmentId);
+            
+            if (appointment) {
+                appointment.status = status;
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Create notification for customer if they have an account
+                if (!appointment.customerId.startsWith('temp_')) {
+                    const notification = {
+                        id: Date.now(),
+                        userId: appointment.customerId,
+                        type: 'appointment_update',
+                        title: 'Appointment ' + status,
+                        message: `Your ${appointment.serviceText} appointment with ${appointment.stylistText} on ${appointment.date} at ${appointment.time} has been ${status}`,
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        appointmentId: appointment.id
+                    };
+                    addNotification(notification);
+                }
+                
+                // Update stylist stats if approved
+                if (status === 'confirmed') {
+                    const users = getUsers();
+                    const stylist = users.find(u => u.id === appointment.stylist);
+                    if (stylist) {
+                        // Add to stylist's appointments count
+                        stylist.appointments = (stylist.appointments || 0) + 1;
+                        
+                        // Add client if not already in list
+                        if (!stylist.clients) stylist.clients = [];
+                        if (!stylist.clients.includes(appointment.customerId)) {
+                            stylist.clients.push(appointment.customerId);
+                        }
+                        
+                        localStorage.setItem('users', JSON.stringify(users));
+                    }
+                }
+                
+                // Reload dashboard
+                loadStylistDashboard();
+                
+                alert(`Appointment ${status} successfully!`);
+            }
+        }
+
+        // Load customer dashboard
+        function loadCustomerDashboard() {
+            customerName.textContent = currentUser.name;
+            document.getElementById('customer-membership').textContent = 'Premium Member';
+            
+            const appointments = getAppointments();
+            const customerAppointments = appointments.filter(a => a.customerId === currentUser.id);
+            
+            document.getElementById('customer-appointments-count').textContent = customerAppointments.length;
+            
+            // Find last visit
+            const confirmedAppointments = customerAppointments
+                .filter(a => a.status === 'confirmed' || a.status === 'completed')
+                .sort((a, b) => new Date(b.date + 'T' + b.time) - new Date(a.date + 'T' + a.time));
+            
+            document.getElementById('customer-last-visit').textContent = confirmedAppointments.length > 0 ? 
+                confirmedAppointments[0].date : '-';
+            
+            // Find favorite service
+            const serviceCounts = {};
+            customerAppointments.forEach(appointment => {
+                if (appointment.status === 'confirmed' || appointment.status === 'completed') {
+                    serviceCounts[appointment.service] = (serviceCounts[appointment.service] || 0) + 1;
+                }
+            });
+            
+            let favoriteService = '-';
+            let maxCount = 0;
+            for (const service in serviceCounts) {
+                if (serviceCounts[service] > maxCount) {
+                    maxCount = serviceCounts[service];
+                    favoriteService = service;
+                }
+            }
+            
+            document.getElementById('customer-favorite-service').textContent = favoriteService !== '-' ? 
+                favoriteService.charAt(0).toUpperCase() + favoriteService.slice(1) : '-';
+            
+            // Load appointments
+            const appointmentsList = document.getElementById('customer-appointments-list');
+            appointmentsList.innerHTML = '';
+            
+            if (customerAppointments.length === 0) {
+                appointmentsList.innerHTML = '<p>You have no appointments yet.</p>';
+                return;
+            }
+            
+            customerAppointments
+                .sort((a, b) => new Date(b.date + 'T' + b.time) - new Date(a.date + 'T' + a.time))
+                .forEach(appointment => {
+                    const appointmentEl = document.createElement('div');
+                    appointmentEl.className = 'appointment-card';
+                    appointmentEl.innerHTML = `
+                        <div class="appointment-info">
+                            <h3>${appointment.serviceText} with ${appointment.stylistText}</h3>
+                            <p><strong>Date:</strong> ${appointment.date} at ${appointment.time}</p>
+                            <p><strong>Status:</strong> ${appointment.status}</p>
+                            ${appointment.notes ? `<p><strong>Notes:</strong> ${appointment.notes}</p>` : ''}
+                        </div>
+                        <div class="appointment-status">
+                            <span class="status-badge status-${appointment.status}">${appointment.status}</span>
+                        </div>
+                    `;
+                    appointmentsList.appendChild(appointmentEl);
+                });
+            
+            // Load stylists
+            const users = getUsers();
+            const stylists = users.filter(u => u.type === 'stylist');
+            const stylistsList = document.getElementById('stylists-list');
+            stylistsList.innerHTML = '';
+            
+            stylists.forEach(stylist => {
+                const stylistEl = document.createElement('div');
+                stylistEl.className = 'stylist-card';
+                stylistEl.innerHTML = `
+                    <div class="stylist-img"><i class="fas fa-user"></i></div>
+                    <div class="stylist-content">
+                        <h3>${stylist.name}</h3>
+                        <p>${stylist.specialty || 'Hair Stylist'}</p>
+                        <p>Rating: ${stylist.rating}/5</p>
+                    </div>
+                `;
+                stylistsList.appendChild(stylistEl);
+            });
+            
+            // Pre-fill booking form with customer details
+            document.getElementById('booking-name').value = currentUser.name;
+            document.getElementById('booking-email').value = currentUser.email;
+            document.getElementById('booking-phone').value = currentUser.phone;
+        }
+    </script>
+</body>
+</html>
