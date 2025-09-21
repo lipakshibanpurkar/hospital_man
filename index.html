@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Office Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .role-selector {
+            display: flex;
+            background: #34495e;
+            padding: 4px;
+            border-radius: 5px;
+        }
+
+        .role-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            background: transparent;
+            color: #ecf0f1;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .role-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 500px;
+        }
+
+        .sidebar {
+            display: none;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 15px;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            font-size: 18px;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        .patient-details-form {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+        }
+
+        .patient-details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .patient-detail-item {
+            margin-bottom: 10px;
+        }
+
+        .patient-detail-item label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .patient-detail-item span {
+            display: block;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .echo-report-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1a3d7c;
+        }
+
+        .report-header h3 {
+            color: #1a3d7c;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .patient-info-line {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
+        }
+
+        .patient-info-item {
+            margin-bottom: 5px;
+        }
+
+        .patient-info-item span {
+            font-weight: bold;
+            color: #2a4971;
+        }
+
+        .report-content {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #c5d0e6;
+            border-radius: 8px;
+            background: #f9fbff;
+            min-height: 150px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .report-impression {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1a3d7c;
+            padding-top: 10px;
+            border-top: 1px solid #c5d0e6;
+        }
+
+        .report-footer {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .echo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .echo-controls button {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .echo-preset-btn {
+            background: #eaf0fb;
+            color: #1a3d7c;
+        }
+
+        .echo-preset-btn:hover {
+            background: #d4e2ff;
+        }
+
+        .echo-save-btn {
+            background: #1a73e8;
+            color: white;
+            font-weight: 600;
+        }
+
+        .echo-save-btn:hover {
+            background: #0f5bd3;
+        }
+
+        .echo-generate-btn {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .echo-generate-btn:hover {
+            background: #27ae60;
+        }
+
+        .echo-print-btn {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .echo-print-btn:hover {
+            background: #8e44ad;
+        }
+
+        .echo-delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .echo-delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .echo-hide-btn {
+            background: #f9e1e1;
+            color: #a10000;
+        }
+
+        .echo-hide-btn:hover {
+            background: #f5c7c7;
+        }
+
+        .echo-unhide-btn {
+            background: #e2f7e1;
+            color: #046b1c;
+        }
+
+        .echo-unhide-btn:hover {
+            background: #c6f0c3;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #e74c3c;
+            border-radius: 5px;
+            background: #fadbd8;
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: #27ae60;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #27ae60;
+            border-radius: 5px;
+            background: #d5f5e3;
+            font-size: 14px;
+        }
+
+        .info-message {
+            color: #3498db;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            background: #d6eaf8;
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 500px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: #f2f6fc;
+            color: #2c3e50;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 5px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .consultation-report-box {
+            width: 100%;
+            margin: auto;
+            background: #fff;
+            border: 2px solid #000;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .consultation-header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            border: 1px solid #000;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .consultation-section {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .consultation-section strong {
+            display: inline-block;
+            width: 110px;
+            font-weight: bold;
+        }
+
+        .consultation-textarea {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .consultation-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .consultation-btn {
+            padding: 8px 12px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(26,115,232,0.3);
+            font-size: 13px;
+        }
+        .consultation-btn:hover {
+            background: #0f5bd3;
+        }
+
+        .consultation-doctor {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+        }
+
+        .consultation-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .consultation-form {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .consultation-form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .consultation-form-section {
+            margin-bottom: 12px;
+        }
+
+        .consultation-form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .consultation-form-section select,
+        .consultation-form-section textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .consultation-form-section textarea {
+            min-height: 70px;
+        }
+
+        .saved-reports-list {
+            margin-top: 15px;
+        }
+
+        .saved-report-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .saved-report-item:hover {
+            background: #f0f8ff;
+        }
+
+        .report-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .report-preview {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .edit-report-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .edit-report-btn:hover {
+            background: #2980b9;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2c3e50;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .mobile-nav-item.active {
+            background: #3498db;
+        }
+
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .saved-reports-container {
+            margin-top: 20px;
+        }
+
+        .saved-report-view {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .report-action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .report-action-btn.edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .report-action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .report-action-btn.view {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .edit-mode .report-content,
+        .edit-mode .report-impression {
+            border: 1px dashed #3498db;
+            background: #f0f8ff;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 20px;
+            }
+            
+            .mobile-nav {
+                display: none;
+            }
+            
+            .sidebar {
+                display: block;
+                width: 250px;
+                background: #2c3e50;
+                color: white;
+            }
+            
+            .nav-items-container {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                padding: 15px 20px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            
+            .patient-details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .consultation-form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .consultation-header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .patient-info-line {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .echo-controls button {
+                width: 100%;
+            }
+            
+            .report-actions {
+                flex-direction: column;
+            }
+            
+            .report-action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>MedOffice Manager</span>
+            </div>
+            <div class="user-info">
+                <div class="role-selector">
+                    <button class="role-btn active" id="receptionist-btn">Receptionist</button>
+                    <button class="role-btn" id="admin-btn">Administrator</button>
+                </div>
+                <div class="time">
+                    <span id="current-time">15:21</span> | <span id="current-date">12-09-2025</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="nav-items-container">
+                    <div class="nav-item active" data-target="form-section">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Patient Form</span>
+                    </div>
+                    <div class="nav-item" data-target="appointments-section">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="echo-reports-section">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Echo Reports</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="consultation-section">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Consultation</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="database-section">
+                        <i class="fas fa-database"></i>
+                        <span>Database</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Patient Form Section -->
+                <div class="section active" id="form-section">
+                    <h2>Patient Registration Form</h2>
+                    <div class="patient-id">Patient ID: <span id="patient-id">5041160</span></div>
+
+                    <div class="form-grid">
+                        <div>
+                            <div class="form-group">
+                                <label for="first-name">First Name *</label>
+                                <input type="text" id="first-name" placeholder="Enter first name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name *</label>
+                                <input type="text" id="last-name" placeholder="Enter last name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sex">Sex *</label>
+                                <select id="sex" required>
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile">Mobile No *</label>
+                                <input type="tel" id="mobile" placeholder="Enter mobile number" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="form-group">
+                                <label for="address">Address *</label>
+                                <textarea id="address" placeholder="Enter full address" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth *</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg) *</label>
+                                <input type="number" id="weight" placeholder="Enter weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm) *</label>
+                                <input type="number" id="height" placeholder="Enter height" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bp">Blood Pressure</label>
+                                <input type="text" id="bp" placeholder="e.g., 120/80">
+                            </div>
+                            <div class="form-group">
+                                <label for="hr">Heart Rate (BPM)</label>
+                                <input type="number" id="hr" placeholder="e.g., 72">
+                            </div>
+                            <div class="form-group">
+                                <label for="spo2">SpO2 (%)</label>
+                                <input type="number" id="spo2" placeholder="e.g., 98" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="appointment-date">Date of Appointment *</label>
+                                <input type="date" id="appointment-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointment-time">Time of Appointment *</label>
+                                <input type="time" id="appointment-time" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn" id="submit-btn">
+                        <i class="fas fa-check"></i> Submit
+                    </button>
+                    <button class="btn btn-secondary" id="clear-btn">
+                        <i class="fas fa-times"></i> Clear Form
+                    </button>
+                </div>
+
+                <!-- Appointments Section -->
+                <div class="section" id="appointments-section">
+                    <h2>Appointments Schedule</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-appointments" placeholder="Search by patient ID, name, or mobile...">
+                        <button id="search-appointments-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="card">
+                        <h3>Today's Appointments</h3>
+                        <div class="data-table-container">
+                            <table class="data-table" id="appointments-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Patient ID</th>
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Purpose</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Appointments will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Echo Reports Section -->
+                <div class="section" id="echo-reports-section">
+                    <h2>Echo Reports</h2>
+                    
+                    <div class="search-box">
+                        <input type="text" id="echo-patient-search" placeholder="Enter Patient ID">
+                        <button id="echo-search-btn"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    
+                    <div id="echo-search-results"></div>
+                    
+                    <div class="echo-report-container" id="echo-report-container" style="display: none;">
+                        <div class="report-header">
+                            <h3>ECHOCARDIOGRAPHY REPORT</h3>
+                            <div class="patient-info-line">
+                                <div class="patient-info-item">REG NO: <span id="report-reg-no">9041210</span></div>
+                                <div class="patient-info-item">NAME: <span id="report-name">---</span></div>
+                            </div>
+                            <div class="patient-info-line">
+                                <div class="patient-info-item">AGE: <span id="report-age">15Y, 8M, 4D</span></div>
+                                <div class="patient-info-item">DOB: <span id="report-dob">00-01-00</span></div>
+                                <div class="patient-info-item">DATE: <span id="report-date">12-09-25</span></div>
+                            </div>
+                            <div class="patient-info-line">
+                                <div class="patient-info-item">HR: <span id="report-hr">0</span> BPM</div>
+                                <div class="patient-info-item">BP: <span id="report-bp">--</span> mmHg</div>
+                                <div class="patient-info-item">SPO2: <span id="report-spo2">93</span>%</div>
+                            </div>
+                            <div class="patient-info-line">
+                                <div class="patient-info-item">ADDRESS: <span id="report-address">---</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-content" id="echo-report-content">
+Structurally normal heart
+Intact interatrial septum
+Intact interventricular septum
+No Mitral or Tricuspid Regurgitation
+Normal Related Great Arteries
+Confluent and good sized branch pulmonary arteries
+Left aortic arch, No CoA/PDA/LSVC
+No pleural/pericardial effusion
+Normal coronaries
+Good biventricular function
+                        </div>
+                        
+                        <div class="report-impression">
+                            Impression: <span id="echo-impression">Normal Study</span>
+                        </div>
+                        
+                        <div class="report-footer">
+                            Dr Ashishkumar M Banpuri<br>
+                            MBBS, MD, DM (Pediatric Cardiology)<br>
+                            Consultant Pediatric & Fetal Cardiac
+                        </div>
+                    </div>
+                    
+                    <div class="echo-controls">
+                        <button class="echo-save-btn" id="echo-save-btn">
+                            <i class="fas fa-save"></i> Save Report
+                        </button>
+                        <button class="echo-generate-btn" id="echo-generate-btn">
+                            <i class="fas fa-file-medical"></i> Generate Report
+                        </button>
+                        <button class="echo-print-btn" id="echo-print-btn">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="echo-preset-btn" onclick="setEchoReport('Normal')">
+                            Normal
+                        </button>
+                        <button class="echo-preset-btn" onclick="setEchoReport('ASD')">
+                            ASD
+                        </button>
+                        <button class="echo-preset-btn" onclick="setEchoReport('PDA')">
+                            PDA
+                        </button>
+                        <button class="echo-delete-btn" id="echo-delete-btn">
+                            <i class="fas fa-trash"></i> Delete Report
+                        </button>
+                        <button class="echo-hide-btn" id="hideBtn">
+                            HIDE
+                        </button>
+                        <button class="echo-unhide-btn" id="unhideBtn" style="display: none;">
+                            UNHIDE
+                        </button>
+                    </div>
+
+                    <!-- Saved Echo Reports Section -->
+                    <div class="saved-reports-container" id="saved-echo-reports-container" style="display: none;">
+                        <h3>Saved Echo Reports</h3>
+                        <div class="saved-reports-list" id="saved-echo-reports-list">
+                            <!-- Saved echo reports will be listed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultation Report Section -->
+                <div class="section" id="consultation-section">
+                    <h2>Consultation Report</h2>
+                    
+                    <div class="search-box">
+                        <input type="text" id="consult-patient-search" placeholder="Enter Patient ID">
+                        <button id="consult-search-btn"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    
+                    <div id="consultation-form-container" style="display: none;">
+                        <div class="consultation-form">
+                            <h3>Patient Information</h3>
+                            <div class="consultation-header">
+                                <div>
+                                    <b>Reg No:</b> <span id="consult-regno">9041138</span><br>
+                                    <b>Age:</b> <span id="consult-age">125Y, 8M, 4D</span><br>
+                                    <b>Sex:</b> <span id="consult-sex">M</span>
+                                </div>
+                                <div>
+                                    <b>Name:</b> <span id="consult-name">Ash</span><br>
+                                    <b>DOB:</b> <span id="consult-dob">01-01-2010</span><br>
+                                    <b>Date:</b> <span id="consult-date">12-09-25</span>
+                                </div>
+                                <div>
+                                    <b>HR:</b> <span id="consult-hr">0 BPM</span><br>
+                                    <b>BP:</b> <span id="consult-bp">-- mmHg</span><br>
+                                    <b>SPO₂:</b> <span id="consult-spo2">93%</span>
+                                </div>
+                            </div>
+                            
+                            <h3 style="margin-top: 15px;">Consultation Details</h3>
+                            <div class="consultation-form-grid">
+                                <div class="consultation-form-section">
+                                    <label for="consult-anc">ANC Detail:</label>
+                                    <select id="consult-anc" class="consultation-input">
+                                        <option value="Not Significant">Not Significant</option>
+                                        <option value="Significant">Significant</option>
+                                        <option value="Gestational Diabetes">Gestational Diabetes</option>
+                                        <option value="Preeclampsia">Preeclampsia</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-perinatal">Perinatal Data:</label>
+                                    <select id="consult-perinatal" class="consultation-input">
+                                        <option value="FT/AGA/LSCS/CIAB/ B Weight - No NICU Stay">FT/AGA/LSCS/CIAB/ B Weight - No NICU Stay</option>
+                                        <option value="Preterm">Preterm</option>
+                                        <option value="SGA">SGA</option>
+                                        <option value="NICU Stay Required">NICU Stay Required</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-symptoms">Symptoms:</label>
+                                    <select id="consult-symptoms" class="consultation-input">
+                                        <option value="Suck Rest Suck Cycle">Suck Rest Suck Cycle</option>
+                                        <option value="Cyanosis">Cyanosis</option>
+                                        <option value="Breathing Difficulty">Breathing Difficulty</option>
+                                        <option value="Poor Weight Gain">Poor Weight Gain</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-other">Other Significant:</label>
+                                    <textarea id="consult-other" class="consultation-input" placeholder="Enter other significant details"></textarea>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-echo">Echo:</label>
+                                    <select id="consult-echo" class="consultation-input">
+                                        <option value="Normal Study">Normal Study</option>
+                                        <option value="ASD">ASD</option>
+                                        <option value="VSD">VSD</option>
+                                        <option value="PDA">PDA</option>
+                                        <option value="TOF">TOF</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-ecg">ECG:</label>
+                                    <select id="consult-ecg" class="consultation-input">
+                                        <option value="Normal">Normal</option>
+                                        <option value="Sinus Tachycardia">Sinus Tachycardia</option>
+                                        <option value="Sinus Bradycardia">Sinus Bradycardia</option>
+                                        <option value="Arrhythmia">Arrhythmia</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-meds">Medications:</label>
+                                    <select id="consult-meds" class="consultation-input" multiple>
+                                        <option value="NA">NA</option>
+                                        <option value="Diuretics">Diuretics</option>
+                                        <option value="Beta Blockers">Beta Blockers</option>
+                                        <option value="ACE Inhibitors">ACE Inhibitors</option>
+                                        <option value="Anticoagulants">Anticoagulants</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <small>Hold Ctrl to select multiple medications</small>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-advice">Advice:</label>
+                                    <textarea id="consult-advice" class="consultation-input" placeholder="Enter doctor advice here"></textarea>
+                                </div>
+                                
+                                <div class="consultation-form-section">
+                                    <label for="consult-nextfu">Next Follow Up:</label>
+                                    <input type="date" id="consult-nextfu" class="consultation-input" />
+                                </div>
+                            </div>
+                            
+                            <div class="consultation-buttons">
+                                <button class="consultation-btn" id="consult-generate-btn">Generate Report</button>
+                                <button class="consultation-btn" id="consult-reset-btn">Reset Form</button>
+                                <button class="consultation-btn" id="consult-save-btn" style="display: none;">Save Report</button>
+                                <button class="consultation-btn" id="consult-update-btn" style="display: none;">Update Report</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="consultation-report-box" id="consultation-report-container" style="display: none;">
+                        <h2>Consultation Report</h2>
+
+                        <!-- Header -->
+                        <div class="consultation-header">
+                            <div>
+                                <b>Reg No:</b> <span id="report-regno">9041138</span><br>
+                                <b>Age:</b> <span id="report-age-display">125Y, 8M, 4D</span><br>
+                                <b>Sex:</b> <span id="report-sex">M</span>
+                            </div>
+                            <div>
+                                <b>Name:</b> <span id="report-name-display">Ash</span><br>
+                                <b>DOB:</b> <span id="report-dob-display">01-01-2010</span><br>
+                                <b>Date:</b> <span id="report-date-display">12-09-25</span>
+                            </div>
+                            <div>
+                                <b>HR:</b> <span id="report-hr-display">0 BPM</span><br>
+                                <b>BP:</b> <span id="report-bp-display">-- mmHg</span><br>
+                                <b>SPO₂:</b> <span id="report-spo2-display">93%</span>
+                            </div>
+                        </div>
+
+                        <!-- Sections -->
+                        <div class="consultation-section"><strong>ANC Detail:</strong> <span id="report-anc">Not Significant</span></div>
+                        <div class="consultation-section"><strong>Perinatal Data:</strong> <span id="report-perinatal">FT/AGA/LSCS/CIAB/ B Weight - No NICU Stay</span></div>
+                        <div class="consultation-section"><strong>Symptoms:</strong> <span id="report-symptoms">Suck Rest Suck Cycle</span></div>
+                        <div class="consultation-section"><strong>Other Significant:</strong> <span id="report-other">None</span></div>
+                        <div class="consultation-section"><strong>Echo:</strong> <span id="report-echo">Normal Study</span></div>
+                        <div class="consultation-section"><strong>ECG:</strong> <span id="report-ecg">0</span></div>
+                        <div class="consultation-section"><strong>Medications:</strong> 
+                            <ul id="report-meds">
+                                <li>NA</li>
+                            </ul>
+                        </div>
+
+                        <div class="consultation-section"><strong>Advice:</strong><br>
+                            <span id="report-advice">No specific advice</span>
+                        </div>
+
+                        <div class="consultation-section">
+                            <strong>Next F/U:</strong> <span id="report-nextfu">01-01-2026</span>
+                        </div>
+
+                        <div class="consultation-doctor">
+                            Dr Ashishkumar M Banpurkar<br>
+                            MBBS, MD, DM (Pediatric Cardiology)<br>
+                            Consultant Pediatric & Fetal Cardiologist
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="consultation-buttons">
+                            <button class="consultation-btn" id="consult-print-btn">Print Report</button>
+                            <button class="consultation-btn" id="consult-pdf-btn">Save as PDF</button>
+                            <button class="consultation-btn" id="consult-edit-btn">Edit Report</button>
+                            <button class="consultation-btn" id="consult-delete-btn" style="background: #e74c3c;">Delete Report</button>
+                        </div>
+                    </div>
+                    
+                    <div id="saved-reports-container" style="display: none;">
+                        <h3>Saved Consultation Reports</h3>
+                        <div class="saved-reports-list" id="saved-reports-list">
+                            <!-- Saved reports will be listed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Section -->
+                <div class="section" id="database-section">
+                    <h2>Patient Database</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Patients</h3>
+                            <div class="value" id="total-patients">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>New This Month</h3>
+                            <div class="value" id="month-patients">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Appointments Today</h3>
+                            <div class="value" id="today-appointments">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Follow-ups Due</h3>
+                            <div class="value" id="due-followups">0</div>
+                        </div>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="search-database" placeholder="Search by patient ID, name, or mobile...">
+                        <button id="search-database-btn"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="database-table">
+                            <thead>
+                                <tr>
+                                    <th>Reg No</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Sex</th>
+                                    <th>Mobile</th>
+                                    <th>Last Visit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Patients will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" data-target="form-section">
+            <i class="fas fa-user-plus"></i>
+            <span>Patient</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="appointments-section">
+            <i class="fas fa-calendar-check"></i>
+            <span>Appointments</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="echo-reports-section">
+            <i class="fas fa-file-medical"></i>
+            <span>Echo</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="consultation-section">
+            <i class="fas fa-stethoscope"></i>
+            <span>Consult</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="database-section">
+            <i class="fas fa-database"></i>
+            <span>Database</span>
+        </a>
+    </div>
+
+    <script>
+        // Data storage
+        let patients = JSON.parse(localStorage.getItem('patients')) || [];
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+        let echoReports = JSON.parse(localStorage.getItem('echoReports')) || [];
+        let consultationReports = JSON.parse(localStorage.getItem('consultationReports')) || [];
+
+        // Initialize with sample data if empty
+        if (patients.length === 0) {
+            patients = [
+                {
+                    id: 5041158,
+                    firstName: "Ash",
+                    lastName: "K",
+                    sex: "male",
+                    email: "ash@example.com",
+                    mobile: "9876543210",
+                    address: "123 Main St, City, State",
+                    dob: "1987-05-15",
+                    weight: 75,
+                    height: 175,
+                    bp: "120/80",
+                    hr: 72,
+                    spo2: 98,
+                    regDate: "2025-04-09"
+                },
+                {
+                    id: 5041159,
+                    firstName: "Patient",
+                    lastName: "Two",
+                    sex: "female",
+                    email: "patient2@example.com",
+                    mobile: "9876543211",
+                    address: "456 Oak St, City, State",
+                    dob: "1980-11-22",
+                    weight: 62,
+                    height: 165,
+                    bp: "110/70",
+                    hr: 68,
+                    spo2: 99,
+                    regDate: "2025-04-10"
+                }
+            ];
+            localStorage.setItem('patients', JSON.stringify(patients));
+        }
+
+        if (appointments.length === 0) {
+            appointments = [
+                {
+                    id: 1,
+                    patientId: 5041158,
+                    date: new Date().toISOString().split('T')[0],
+                    time: "09:00",
+                    purpose: "Follow-up",
+                    status: "Confirmed"
+                },
+                {
+                    id: 2,
+                    patientId: 5041159,
+                    date: new Date().toISOString().split('T')[0],
+                    time: "10:30",
+                    purpose: "Consultation",
+                    status: "Confirmed"
+                }
+            ];
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+        }
+
+        // Echo Report Presets
+        const echoPresets = {
+            Normal: {
+                content: `Structurally normal heart
+Intact interatrial septum
+Intact interventricular septum
+No Mitral or Tricuspid Regurgitation
+Normal Related Great Arteries
+Confluent and good sized branch pulmonary arteries
+Left aortic arch, No CoA/PDA/LSVC
+No pleural/pericardial effusion
+Normal coronaries
+Good biventricular function`,
+                impression: "Normal Study"
+            },
+            ASD: {
+                content: `Dilated right atrium and right ventricle
+Atrial septal defect visualized
+Left-to-right shunt across the defect
+Normal ventricular function
+No valvular abnormalities
+No other structural defects noted`,
+                impression: "Atrial Septal Defect (ASD)"
+            },
+            PDA: {
+                content: `Dilated left atrium and left ventricle
+Patent ductus arteriosus visualized
+Continuous left-to-right shunt
+Normal ventricular function
+No other structural abnormalities
+Increased pulmonary blood flow`,
+                impression: "Patent Ductus Arteriosus (PDA)"
+            }
+        };
+
+        // Update current time and date
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent =
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('current-date').textContent =
+                now.getDate().toString().padStart(2, '0') + '-' +
+                (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                now.getFullYear();
+                
+            // Update report date
+            document.getElementById('report-date').textContent = 
+                now.getDate().toString().padStart(2, '0') + '-' +
+                (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                now.getFullYear().toString().substr(-2);
+            
+            // Update consultation date
+            document.getElementById('consult-date').textContent = 
+                now.getDate().toString().padStart(2, '0') + '-' +
+                (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                now.getFullYear().toString().substr(-2);
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Generate unique patient ID
+        function generatePatientId() {
+            if (patients.length === 0) return 5041160;
+            return Math.max(...patients.map(p => p.id)) + 1;
+        }
+
+        // Initialize patient ID on page load
+        document.getElementById('patient-id').textContent = generatePatientId();
+
+        // Role switching functionality
+        document.getElementById('receptionist-btn').addEventListener('click', function() {
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'none');
+            
+            // Switch to form section if on admin section
+            const currentSection = document.querySelector('.section.active');
+            if (currentSection.id === 'echo-reports-section' || 
+                currentSection.id === 'consultation-section' || 
+                currentSection.id === 'database-section') {
+                switchSection('form-section');
+            }
+        });
+
+        document.getElementById('admin-btn').addEventListener('click', function() {
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'flex');
+            
+            // Refresh data when switching to admin
+            refreshAppointments();
+            refreshDatabase();
+            updateStats();
+            refreshSavedReports();
+            refreshSavedEchoReports();
+        });
+
+        // Initially hide admin items
+        document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'none');
+
+        // Navigation functionality
+        function switchSection(targetId) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`.nav-item[data-target="${targetId}"]`)?.classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            
+            // Update mobile nav
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`.mobile-nav-item[data-target="${targetId}"]`).classList.add('active');
+            
+            // Refresh data when switching to these sections
+            if (targetId === 'database-section') {
+                refreshDatabase();
+                updateStats();
+            } else if (targetId === 'appointments-section') {
+                refreshAppointments();
+            } else if (targetId === 'echo-reports-section') {
+                // Reset echo reports view
+                document.getElementById('echo-patient-search').value = '';
+                document.getElementById('echo-report-container').style.display = 'none';
+                document.getElementById('saved-echo-reports-container').style.display = 'block';
+                refreshSavedEchoReports();
+            } else if (targetId === 'consultation-section') {
+                // Reset consultation reports view
+                document.getElementById('consult-patient-search').value = '';
+                document.getElementById('consultation-form-container').style.display = 'none';
+                document.getElementById('consultation-report-container').style.display = 'none';
+                document.getElementById('saved-reports-container').style.display = 'block';
+                refreshSavedReports();
+            }
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                switchSection(target);
+            });
+        });
+
+        // Mobile navigation
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = this.getAttribute('data-target');
+                switchSection(target);
+            });
+        });
+
+        // Form submission
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            // Validate form
+            const requiredFields = ['first-name', 'last-name', 'sex', 'mobile', 'address', 'dob', 'weight', 'height', 'appointment-date', 'appointment-time'];
+            let valid = true;
+
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    element.style.borderColor = 'red';
+                    valid = false;
+                } else {
+                    element.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!valid) {
+                showMessage('Please fill all required fields', 'error');
+                return;
+            }
+
+            // Create patient object
+            const patientId = parseInt(document.getElementById('patient-id').textContent);
+            const patient = {
+                id: patientId,
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                sex: document.getElementById('sex').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('mobile').value,
+                address: document.getElementById('address').value,
+                dob: document.getElementById('dob').value,
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseFloat(document.getElementById('height').value),
+                bp: document.getElementById('bp').value,
+                hr: parseInt(document.getElementById('hr').value) || 0,
+                spo2: parseInt(document.getElementById('spo2').value) || 0,
+                regDate: new Date().toISOString().split('T')[0]
+            };
+
+            // Create appointment object
+            const appointment = {
+                id: appointments.length > 0 ? Math.max(...appointments.map(a => a.id)) + 1 : 1,
+                patientId: patientId,
+                date: document.getElementById('appointment-date').value,
+                time: document.getElementById('appointment-time').value,
+                purpose: "Consultation",
+                status: "Scheduled"
+            };
+
+            // Save data
+            patients.push(patient);
+            appointments.push(appointment);
+
+            localStorage.setItem('patients', JSON.stringify(patients));
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            showMessage(`Patient information and appointment submitted successfully! Patient ID: ${patientId}`, 'success');
+
+            // Reset form and generate new ID
+            document.getElementById('patient-id').textContent = generatePatientId();
+            document.getElementById('clear-btn').click();
+
+            // Refresh data in other sections
+            refreshAppointments();
+            refreshDatabase();
+            updateStats();
+        });
+
+        // Clear form
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            document.querySelectorAll('#form-section input, #form-section select, #form-section textarea').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('appointment-date').valueAsDate = new Date();
+            document.getElementById('appointment-time').value = '09:00';
+        });
+
+        // Set default appointment date to today
+        document.getElementById('appointment-date').valueAsDate = new Date();
+
+        // Database Search Functionality
+        document.getElementById('search-database-btn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('search-database').value.toLowerCase().trim();
+            if (!searchTerm) {
+                refreshDatabase(); // Show all if search is empty
+                return;
+            }
+
+            const filteredPatients = patients.filter(patient => 
+                patient.id.toString().includes(searchTerm) ||
+                patient.firstName.toLowerCase().includes(searchTerm) ||
+                patient.lastName.toLowerCase().includes(searchTerm) ||
+                patient.mobile.includes(searchTerm)
+            );
+
+            refreshDatabase(filteredPatients);
+        });
+
+        // Appointments Search Functionality
+        document.getElementById('search-appointments-btn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('search-appointments').value.toLowerCase().trim();
+            if (!searchTerm) {
+                refreshAppointments(); // Show all if search is empty
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const filteredAppointments = appointments.filter(appointment => {
+                if (appointment.date !== today) return false;
+                
+                const patient = patients.find(p => p.id === appointment.patientId);
+                if (!patient) return false;
+                
+                return (
+                    appointment.patientId.toString().includes(searchTerm) ||
+                    patient.firstName.toLowerCase().includes(searchTerm) ||
+                    patient.lastName.toLowerCase().includes(searchTerm) ||
+                    patient.mobile.includes(searchTerm)
+                );
+            });
+
+            refreshAppointments(filteredAppointments);
+        });
+
+        // Echo Reports Search Functionality
+        document.getElementById('echo-search-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').value.trim();
+            if (!patientId) {
+                showMessage('Please enter a Patient ID', 'error');
+                return;
+            }
+
+            const patient = patients.find(p => p.id == patientId);
+            if (!patient) {
+                showMessage('Patient not found with ID: ' + patientId, 'error');
+                return;
+            }
+
+            displayPatientInfo(patient);
+            
+            // Check if there are saved echo reports for this patient
+            const savedReports = echoReports.filter(report => report.patientId == patientId);
+            if (savedReports.length > 0) {
+                document.getElementById('saved-echo-reports-container').style.display = 'block';
+                displaySavedEchoReports(savedReports, patient);
+            } else {
+                document.getElementById('saved-echo-reports-container').style.display = 'none';
+            }
+            
+            showMessage('Patient found successfully', 'success');
+        });
+
+        // Display patient information in the report
+        function displayPatientInfo(patient) {
+            document.getElementById('report-reg-no').textContent = patient.id;
+            document.getElementById('report-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            
+            // Calculate age from DOB
+            if (patient.dob) {
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('report-age').textContent = age + ' years';
+                document.getElementById('report-dob').textContent = formatDate(patient.dob);
+            }
+            
+            document.getElementById('report-address').textContent = patient.address;
+            document.getElementById('report-bp').textContent = patient.bp || '--';
+            document.getElementById('report-spo2').textContent = patient.spo2 ? patient.spo2 + '%' : '--';
+            document.getElementById('report-hr').textContent = patient.hr ? patient.hr + ' BPM' : '--';
+            
+            document.getElementById('echo-report-container').style.display = 'block';
+        }
+
+        // Display saved echo reports for a patient
+        function displaySavedEchoReports(reports, patient) {
+            const reportsList = document.getElementById('saved-echo-reports-list');
+            reportsList.innerHTML = '';
+            
+            reports.forEach(report => {
+                const reportItem = document.createElement('div');
+                reportItem.className = 'saved-report-item';
+                reportItem.innerHTML = `
+                    <div class="report-meta">
+                        <span>Report ID: ${report.id}</span>
+                        <span>${formatDate(report.date)}</span>
+                    </div>
+                    <div class="report-preview">
+                        <strong>Impression:</strong> ${report.impression}
+                    </div>
+                    <div class="report-actions">
+                        <button class="report-action-btn view" data-report-id="${report.id}">
+                            <i class="fas fa-eye"></i> View Report
+                        </button>
+                        <button class="report-action-btn edit" data-report-id="${report.id}">
+                            <i class="fas fa-edit"></i> Edit Report
+                        </button>
+                        <button class="report-action-btn delete" data-report-id="${report.id}">
+                            <i class="fas fa-trash"></i> Delete Report
+                        </button>
+                    </div>
+                `;
+                
+                reportsList.appendChild(reportItem);
+            });
+            
+            // Add event listeners to the buttons
+            document.querySelectorAll('.report-action-btn.view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = reports.find(r => r.id == reportId);
+                    if (report) {
+                        viewEchoReport(report, patient);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = reports.find(r => r.id == reportId);
+                    if (report) {
+                        editEchoReport(report, patient);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    if (confirm('Are you sure you want to delete this report?')) {
+                        deleteEchoReport(reportId);
+                    }
+                });
+            });
+        }
+
+        // View a saved echo report
+        function viewEchoReport(report, patient) {
+            document.getElementById('report-reg-no').textContent = patient.id;
+            document.getElementById('report-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            
+            // Calculate age from DOB
+            if (patient.dob) {
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('report-age').textContent = age + ' years';
+                document.getElementById('report-dob').textContent = formatDate(patient.dob);
+            }
+            
+            document.getElementById('report-address').textContent = patient.address;
+            document.getElementById('report-bp').textContent = patient.bp || '--';
+            document.getElementById('report-spo2').textContent = patient.spo2 ? patient.spo2 + '%' : '--';
+            document.getElementById('report-hr').textContent = patient.hr ? patient.hr + ' BPM' : '--';
+            
+            document.getElementById('echo-report-content').textContent = report.content;
+            document.getElementById('echo-impression').textContent = report.impression;
+            
+            document.getElementById('echo-report-container').style.display = 'block';
+            document.getElementById('echo-report-container').classList.remove('edit-mode');
+            
+            // Hide edit controls
+            document.querySelectorAll('.echo-preset-btn').forEach(btn => btn.style.display = 'none');
+            document.getElementById('echo-save-btn').style.display = 'none';
+            
+            showMessage('Report loaded successfully', 'success');
+        }
+
+        // Edit a saved echo report
+        function editEchoReport(report, patient) {
+            document.getElementById('report-reg-no').textContent = patient.id;
+            document.getElementById('report-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            
+            // Calculate age from DOB
+            if (patient.dob) {
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('report-age').textContent = age + ' years';
+                document.getElementById('report-dob').textContent = formatDate(patient.dob);
+            }
+            
+            document.getElementById('report-address').textContent = patient.address;
+            document.getElementById('report-bp').textContent = patient.bp || '--';
+            document.getElementById('report-spo2').textContent = patient.spo2 ? patient.spo2 + '%' : '--';
+            document.getElementById('report-hr').textContent = patient.hr ? patient.hr + ' BPM' : '--';
+            
+            // Create editable content
+            const contentDiv = document.getElementById('echo-report-content');
+            contentDiv.innerHTML = `<textarea class="edit-textarea" id="edit-echo-content">${report.content}</textarea>`;
+            
+            const impressionDiv = document.getElementById('echo-impression');
+            impressionDiv.innerHTML = `<input type="text" class="edit-input" id="edit-echo-impression" value="${report.impression}">`;
+            
+            document.getElementById('echo-report-container').style.display = 'block';
+            document.getElementById('echo-report-container').classList.add('edit-mode');
+            
+            // Show edit controls
+            document.querySelectorAll('.echo-preset-btn').forEach(btn => btn.style.display = 'inline-block');
+            document.getElementById('echo-save-btn').style.display = 'inline-block';
+            
+            // Add save button functionality
+            const saveBtn = document.getElementById('echo-save-btn');
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            saveBtn.onclick = function() {
+                saveEchoReportChanges(report.id, patient.id);
+            };
+            
+            showMessage('Editing report. Make your changes and click Save Changes.', 'info');
+        }
+
+        // Save changes to an echo report
+        function saveEchoReportChanges(reportId, patientId) {
+            const newContent = document.getElementById('edit-echo-content').value;
+            const newImpression = document.getElementById('edit-echo-impression').value;
+            
+            if (!newContent || !newImpression) {
+                showMessage('Report content and impression cannot be empty', 'error');
+                return;
+            }
+            
+            // Find the report index
+            const reportIndex = echoReports.findIndex(r => r.id == reportId);
+            if (reportIndex === -1) {
+                showMessage('Report not found', 'error');
+                return;
+            }
+            
+            // Update the report
+            echoReports[reportIndex] = {
+                id: echoReports[reportIndex].id,
+                patientId: echoReports[reportIndex].patientId,
+                date: echoReports[reportIndex].date,
+                content: newContent,
+                impression: newImpression
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('echoReports', JSON.stringify(echoReports));
+            
+            showMessage('Report updated successfully', 'success');
+            
+            // Refresh the reports list
+            const patient = patients.find(p => p.id == patientId);
+            if (patient) {
+                const savedReports = echoReports.filter(report => report.patientId == patientId);
+                displaySavedEchoReports(savedReports, patient);
+            }
+            
+            // Return to view mode
+            const report = echoReports[reportIndex];
+            viewEchoReport(report, patient);
+        }
+
+        // Delete an echo report
+        function deleteEchoReport(reportId) {
+            echoReports = echoReports.filter(report => report.id != reportId);
+            localStorage.setItem('echoReports', JSON.stringify(echoReports));
+            
+            showMessage('Report deleted successfully', 'success');
+            
+            // Refresh the reports list
+            const patientId = document.getElementById('echo-patient-search').value;
+            if (patientId) {
+                const patient = patients.find(p => p.id == patientId);
+                if (patient) {
+                    const savedReports = echoReports.filter(report => report.patientId == patientId);
+                    if (savedReports.length > 0) {
+                        displaySavedEchoReports(savedReports, patient);
+                    } else {
+                        document.getElementById('saved-echo-reports-container').style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Refresh saved echo reports
+        function refreshSavedEchoReports() {
+            const savedReportsList = document.getElementById('saved-echo-reports-list');
+            savedReportsList.innerHTML = '';
+            
+            if (echoReports.length === 0) {
+                savedReportsList.innerHTML = '<p>No saved echo reports found.</p>';
+                return;
+            }
+            
+            // Group reports by patient ID
+            const reportsByPatient = {};
+            echoReports.forEach(report => {
+                if (!reportsByPatient[report.patientId]) {
+                    reportsByPatient[report.patientId] = [];
+                }
+                reportsByPatient[report.patientId].push(report);
+            });
+            
+            // Display all reports
+            for (const patientId in reportsByPatient) {
+                const patient = patients.find(p => p.id == patientId);
+                if (patient) {
+                    const patientHeader = document.createElement('h4');
+                    patientHeader.textContent = `Patient: ${patient.firstName} ${patient.lastName} (ID: ${patientId})`;
+                    patientHeader.style.marginTop = '15px';
+                    patientHeader.style.marginBottom = '10px';
+                    savedReportsList.appendChild(patientHeader);
+                    
+                    const patientReports = reportsByPatient[patientId];
+                    patientReports.forEach(report => {
+                        const reportItem = document.createElement('div');
+                        reportItem.className = 'saved-report-item';
+                        reportItem.innerHTML = `
+                            <div class="report-meta">
+                                <span>Report ID: ${report.id}</span>
+                                <span>${formatDate(report.date)}</span>
+                            </div>
+                            <div class="report-preview">
+                                <strong>Impression:</strong> ${report.impression}
+                            </div>
+                            <div class="report-actions">
+                                <button class="report-action-btn view" data-report-id="${report.id}">
+                                    <i class="fas fa-eye"></i> View Report
+                                </button>
+                                <button class="report-action-btn edit" data-report-id="${report.id}">
+                                    <i class="fas fa-edit"></i> Edit Report
+                                </button>
+                                <button class="report-action-btn delete" data-report-id="${report.id}">
+                                    <i class="fas fa-trash"></i> Delete Report
+                                </button>
+                            </div>
+                        `;
+                        
+                        savedReportsList.appendChild(reportItem);
+                    });
+                }
+            }
+            
+            // Add event listeners to the buttons
+            document.querySelectorAll('.report-action-btn.view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = echoReports.find(r => r.id == reportId);
+                    if (report) {
+                        const patient = patients.find(p => p.id == report.patientId);
+                        if (patient) {
+                            // Set the patient ID in search
+                            document.getElementById('echo-patient-search').value = patient.id;
+                            viewEchoReport(report, patient);
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = echoReports.find(r => r.id == reportId);
+                    if (report) {
+                        const patient = patients.find(p => p.id == report.patientId);
+                        if (patient) {
+                            // Set the patient ID in search
+                            document.getElementById('echo-patient-search').value = patient.id;
+                            editEchoReport(report, patient);
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    if (confirm('Are you sure you want to delete this report?')) {
+                        deleteEchoReport(reportId);
+                    }
+                });
+            });
+        }
+
+        // Consultation Reports Search Functionality
+        document.getElementById('consult-search-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('consult-patient-search').value.trim();
+            if (!patientId) {
+                showMessage('Please enter a Patient ID', 'error');
+                return;
+            }
+
+            const patient = patients.find(p => p.id == patientId);
+            if (!patient) {
+                showMessage('Patient not found with ID: ' + patientId, 'error');
+                return;
+            }
+
+            displayPatientInfoForConsultation(patient);
+            showMessage('Patient found successfully', 'success');
+        });
+
+        // Display patient information in the consultation form
+        function displayPatientInfoForConsultation(patient) {
+            document.getElementById('consult-regno').textContent = patient.id;
+            document.getElementById('consult-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            document.getElementById('consult-sex').textContent = patient.sex.charAt(0).toUpperCase();
+            
+            // Calculate age from DOB
+            if (patient.dob) {
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('consult-age').textContent = age + ' years';
+                document.getElementById('consult-dob').textContent = formatDate(patient.dob);
+            }
+            
+            document.getElementById('consult-bp').textContent = patient.bp || '--';
+            document.getElementById('consult-spo2').textContent = patient.spo2 ? patient.spo2 + '%' : '--';
+            document.getElementById('consult-hr').textContent = patient.hr ? patient.hr + ' BPM' : '--';
+            
+            document.getElementById('consultation-form-container').style.display = 'block';
+            document.getElementById('saved-reports-container').style.display = 'none';
+            
+            // Check if there are saved consultation reports for this patient
+            const savedReports = consultationReports.filter(report => report.patientId == patient.id);
+            if (savedReports.length > 0) {
+                document.getElementById('saved-reports-container').style.display = 'block';
+                displaySavedConsultationReports(savedReports, patient);
+            }
+        }
+
+        // Format date to DD-MM-YYYY
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.getDate().toString().padStart(2, '0') + '-' + 
+                   (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                   date.getFullYear();
+        }
+
+        // Set echo report content based on preset
+        function setEchoReport(presetKey) {
+            if (echoPresets[presetKey]) {
+                if (document.getElementById('echo-report-container').classList.contains('edit-mode')) {
+                    document.getElementById('edit-echo-content').value = echoPresets[presetKey].content;
+                    document.getElementById('edit-echo-impression').value = echoPresets[presetKey].impression;
+                } else {
+                    document.getElementById('echo-report-content').textContent = echoPresets[presetKey].content;
+                    document.getElementById('echo-impression').textContent = echoPresets[presetKey].impression;
+                }
+            }
+        }
+
+        // Hide/Show echo report
+        document.getElementById('hideBtn').addEventListener('click', function() {
+            document.getElementById('echo-report-container').style.display = 'none';
+            document.getElementById('hideBtn').style.display = 'none';
+            document.getElementById('unhideBtn').style.display = 'inline-block';
+        });
+
+        document.getElementById('unhideBtn').addEventListener('click', function() {
+            document.getElementById('echo-report-container').style.display = 'block';
+            document.getElementById('hideBtn').style.display = 'inline-block';
+            document.getElementById('unhideBtn').style.display = 'none';
+        });
+
+        // Save echo report as PNG
+        document.getElementById('echo-save-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            // If in edit mode, save the changes first
+            if (document.getElementById('echo-report-container').classList.contains('edit-mode')) {
+                const reportId = document.getElementById('echo-report-container').getAttribute('data-report-id');
+                if (reportId) {
+                    saveEchoReportChanges(reportId, patientId);
+                }
+            }
+
+            html2canvas(document.getElementById('echo-report-container')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = `Echo_Report_${patientId}_${new Date().getTime()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+
+        // Generate echo report
+        document.getElementById('echo-generate-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            // Create a new echo report
+            const echoReport = {
+                id: echoReports.length > 0 ? Math.max(...echoReports.map(e => e.id)) + 1 : 1,
+                patientId: parseInt(patientId),
+                date: new Date().toISOString().split('T')[0],
+                content: document.getElementById('echo-report-content').textContent,
+                impression: document.getElementById('echo-impression').textContent
+            };
+
+            // Save echo report
+            echoReports.push(echoReport);
+            localStorage.setItem('echoReports', JSON.stringify(echoReports));
+
+            showMessage('Echo report generated successfully', 'success');
+            
+            // Refresh saved reports
+            const patient = patients.find(p => p.id == patientId);
+            if (patient) {
+                const savedReports = echoReports.filter(report => report.patientId == patientId);
+                displaySavedEchoReports(savedReports, patient);
+            }
+        });
+
+        // Print echo report
+        document.getElementById('echo-print-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            window.print();
+        });
+
+        // Delete echo report
+        document.getElementById('echo-delete-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            if (confirm('Are you sure you want to delete the current report?')) {
+                document.getElementById('echo-report-container').style.display = 'none';
+                document.getElementById('echo-patient-search').value = '';
+                showMessage('Report deleted successfully', 'success');
+            }
+        });
+
+        // Generate Consultation Report
+        document.getElementById('consult-generate-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('consult-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            // Get values from form
+            const anc = document.getElementById('consult-anc').value;
+            const perinatal = document.getElementById('consult-perinatal').value;
+            const symptoms = document.getElementById('consult-symptoms').value;
+            const other = document.getElementById('consult-other').value;
+            const echo = document.getElementById('consult-echo').value;
+            const ecg = document.getElementById('consult-ecg').value;
+            const meds = Array.from(document.getElementById('consult-meds').selectedOptions).map(option => option.value);
+            const advice = document.getElementById('consult-advice').value;
+            const nextFu = document.getElementById('consult-nextfu').value;
+
+            // Update report display
+            document.getElementById('report-regno').textContent = document.getElementById('consult-regno').textContent;
+            document.getElementById('report-name-display').textContent = document.getElementById('consult-name').textContent;
+            document.getElementById('report-age-display').textContent = document.getElementById('consult-age').textContent;
+            document.getElementById('report-sex').textContent = document.getElementById('consult-sex').textContent;
+            document.getElementById('report-dob-display').textContent = document.getElementById('consult-dob').textContent;
+            document.getElementById('report-date-display').textContent = document.getElementById('consult-date').textContent;
+            document.getElementById('report-hr-display').textContent = document.getElementById('consult-hr').textContent;
+            document.getElementById('report-bp-display').textContent = document.getElementById('consult-bp').textContent;
+            document.getElementById('report-spo2-display').textContent = document.getElementById('consult-spo2').textContent;
+            
+            document.getElementById('report-anc').textContent = anc;
+            document.getElementById('report-perinatal').textContent = perinatal;
+            document.getElementById('report-symptoms').textContent = symptoms;
+            document.getElementById('report-other').textContent = other || 'None';
+            document.getElementById('report-echo').textContent = echo;
+            document.getElementById('report-ecg').textContent = ecg;
+            
+            // Update medications list
+            const medsList = document.getElementById('report-meds');
+            medsList.innerHTML = '';
+            if (meds.length === 0) {
+                medsList.innerHTML = '<li>NA</li>';
+            } else {
+                meds.forEach(med => {
+                    const li = document.createElement('li');
+                    li.textContent = med;
+                    medsList.appendChild(li);
+                });
+            }
+            
+            document.getElementById('report-advice').textContent = advice || 'No specific advice';
+            document.getElementById('report-nextfu').textContent = nextFu || 'Not scheduled';
+
+            // Show the report and buttons
+            document.getElementById('consultation-report-container').style.display = 'block';
+            document.getElementById('consult-save-btn').style.display = 'inline-block';
+            document.getElementById('consult-update-btn').style.display = 'none';
+        });
+
+        // Reset consultation form
+        document.getElementById('consult-reset-btn').addEventListener('click', function() {
+            document.getElementById('consult-anc').value = 'Not Significant';
+            document.getElementById('consult-perinatal').value = 'FT/AGA/LSCS/CIAB/ B Weight - No NICU Stay';
+            document.getElementById('consult-symptoms').value = 'Suck Rest Suck Cycle';
+            document.getElementById('consult-other').value = '';
+            document.getElementById('consult-echo').value = 'Normal Study';
+            document.getElementById('consult-ecg').value = 'Normal';
+            document.getElementById('consult-meds').selectedIndex = 0;
+            document.getElementById('consult-advice').value = '';
+            document.getElementById('consult-nextfu').value = '';
+        });
+
+        // Save consultation report
+        document.getElementById('consult-save-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('consult-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            // Create consultation report object
+            const consultationReport = {
+                id: consultationReports.length > 0 ? Math.max(...consultationReports.map(c => c.id)) + 1 : 1,
+                patientId: parseInt(patientId),
+                date: new Date().toISOString().split('T')[0],
+                anc: document.getElementById('consult-anc').value,
+                perinatal: document.getElementById('consult-perinatal').value,
+                symptoms: document.getElementById('consult-symptoms').value,
+                other: document.getElementById('consult-other').value,
+                echo: document.getElementById('consult-echo').value,
+                ecg: document.getElementById('consult-ecg').value,
+                meds: Array.from(document.getElementById('consult-meds').selectedOptions).map(option => option.value),
+                advice: document.getElementById('consult-advice').value,
+                nextFu: document.getElementById('consult-nextfu').value
+            };
+
+            // Save consultation report
+            consultationReports.push(consultationReport);
+            localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+
+            showMessage('Consultation report saved successfully', 'success');
+            
+            // Set the report ID for future updates
+            document.getElementById('consultation-report-container').setAttribute('data-report-id', consultationReport.id);
+            
+            // Show update button and hide save button
+            document.getElementById('consult-save-btn').style.display = 'none';
+            document.getElementById('consult-update-btn').style.display = 'inline-block';
+            
+            // Refresh saved reports
+            refreshSavedReports();
+        });
+
+        // Delete consultation report
+        document.getElementById('consult-delete-btn').addEventListener('click', function() {
+            const reportId = document.getElementById('consultation-report-container').getAttribute('data-report-id');
+            
+            if (!reportId) {
+                showMessage('Cannot delete unsaved report', 'error');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this consultation report?')) {
+                consultationReports = consultationReports.filter(report => report.id != reportId);
+                localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+                
+                showMessage('Consultation report deleted successfully', 'success');
+                
+                // Hide the report and show the form
+                document.getElementById('consultation-report-container').style.display = 'none';
+                document.getElementById('consultation-form-container').style.display = 'block';
+                
+                // Refresh saved reports
+                refreshSavedReports();
+            }
+        });
+
+        // Edit consultation report button
+        document.getElementById('consult-edit-btn').addEventListener('click', function() {
+            // Get current report data
+            const reportId = document.getElementById('consultation-report-container').getAttribute('data-report-id');
+            
+            if (!reportId) {
+                showMessage('Cannot edit unsaved report', 'error');
+                return;
+            }
+            
+            // Find the report
+            const report = consultationReports.find(r => r.id == reportId);
+            if (!report) {
+                showMessage('Report not found', 'error');
+                return;
+            }
+            
+            // Populate the form with report data
+            document.getElementById('consult-anc').value = report.anc;
+            document.getElementById('consult-perinatal').value = report.perinatal;
+            document.getElementById('consult-symptoms').value = report.symptoms;
+            document.getElementById('consult-other').value = report.other;
+            document.getElementById('consult-echo').value = report.echo;
+            document.getElementById('consult-ecg').value = report.ecg;
+            
+            // Select medications
+            const medsSelect = document.getElementById('consult-meds');
+            for (let i = 0; i < medsSelect.options.length; i++) {
+                medsSelect.options[i].selected = report.meds.includes(medsSelect.options[i].value);
+            }
+            
+            document.getElementById('consult-advice').value = report.advice;
+            document.getElementById('consult-nextfu').value = report.nextFu;
+            
+            // Show form and hide report
+            document.getElementById('consultation-form-container').style.display = 'block';
+            document.getElementById('consultation-report-container').style.display = 'none';
+            
+            // Show update button and hide save button
+            document.getElementById('consult-save-btn').style.display = 'none';
+            document.getElementById('consult-update-btn').style.display = 'inline-block';
+        });
+
+        // Update consultation report
+        document.getElementById('consult-update-btn').addEventListener('click', function() {
+            const reportId = document.getElementById('consultation-report-container').getAttribute('data-report-id');
+            
+            if (!reportId) {
+                showMessage('Cannot update report', 'error');
+                return;
+            }
+            
+            // Find the report index
+            const reportIndex = consultationReports.findIndex(r => r.id == reportId);
+            if (reportIndex === -1) {
+                showMessage('Report not found', 'error');
+                return;
+            }
+            
+            // Update the report
+            consultationReports[reportIndex] = {
+                id: consultationReports[reportIndex].id,
+                patientId: consultationReports[reportIndex].patientId,
+                date: consultationReports[reportIndex].date,
+                anc: document.getElementById('consult-anc').value,
+                perinatal: document.getElementById('consult-perinatal').value,
+                symptoms: document.getElementById('consult-symptoms').value,
+                other: document.getElementById('consult-other').value,
+                echo: document.getElementById('consult-echo').value,
+                ecg: document.getElementById('consult-ecg').value,
+                meds: Array.from(document.getElementById('consult-meds').selectedOptions).map(option => option.value),
+                advice: document.getElementById('consult-advice').value,
+                nextFu: document.getElementById('consult-nextfu').value
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+            
+            showMessage('Consultation report updated successfully', 'success');
+            
+            // Refresh the report display
+            document.getElementById('consult-generate-btn').click();
+            
+            // Refresh saved reports
+            refreshSavedReports();
+        });
+
+        // Print consultation report
+        document.getElementById('consult-print-btn').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Save consultation report as PDF
+        document.getElementById('consult-pdf-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('consult-patient-search').value;
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error');
+                return;
+            }
+
+            html2canvas(document.getElementById('consultation-report-container')).then(function(canvas) {
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("p", "mm", "a4");
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (canvas.height * width) / canvas.width;
+                
+                pdf.addImage(imgData, "PNG", 0, 0, width, height);
+                pdf.save(`Consultation_Report_${patientId}_${new Date().getTime()}.pdf`);
+            });
+        });
+
+        // Display saved consultation reports
+        function displaySavedConsultationReports(reports, patient) {
+            const savedReportsList = document.getElementById('saved-reports-list');
+            savedReportsList.innerHTML = '';
+            
+            reports.forEach(report => {
+                const reportItem = document.createElement('div');
+                reportItem.className = 'saved-report-item';
+                reportItem.innerHTML = `
+                    <div class="report-meta">
+                        <span>Report ID: ${report.id}</span>
+                        <span>${formatDate(report.date)}</span>
+                    </div>
+                    <div class="report-preview">
+                        <strong>Findings:</strong> ${report.symptoms} | ${report.echo}
+                    </div>
+                    <div class="report-actions">
+                        <button class="report-action-btn view" data-report-id="${report.id}">
+                            <i class="fas fa-eye"></i> View Report
+                        </button>
+                        <button class="report-action-btn delete" data-report-id="${report.id}">
+                            <i class="fas fa-trash"></i> Delete Report
+                        </button>
+                    </div>
+                `;
+                
+                savedReportsList.appendChild(reportItem);
+            });
+            
+            // Add event listeners to the buttons
+            document.querySelectorAll('.report-action-btn.view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = consultationReports.find(r => r.id == reportId);
+                    if (report) {
+                        viewConsultationReport(report, patient);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    if (confirm('Are you sure you want to delete this report?')) {
+                        deleteConsultationReport(reportId);
+                    }
+                });
+            });
+        }
+
+        // View a saved consultation report
+        function viewConsultationReport(report, patient) {
+            // Populate the report display
+            document.getElementById('report-regno').textContent = patient.id;
+            document.getElementById('report-name-display').textContent = `${patient.firstName} ${patient.lastName}`;
+            
+            // Calculate age from DOB
+            if (patient.dob) {
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('report-age-display').textContent = age + ' years';
+                document.getElementById('report-dob-display').textContent = formatDate(patient.dob);
+            }
+            
+            document.getElementById('report-sex').textContent = patient.sex.charAt(0).toUpperCase();
+            document.getElementById('report-date-display').textContent = formatDate(report.date);
+            document.getElementById('report-hr-display').textContent = patient.hr ? patient.hr + ' BPM' : '--';
+            document.getElementById('report-bp-display').textContent = patient.bp || '--';
+            document.getElementById('report-spo2-display').textContent = patient.spo2 ? patient.spo2 + '%' : '--';
+            
+            document.getElementById('report-anc').textContent = report.anc;
+            document.getElementById('report-perinatal').textContent = report.perinatal;
+            document.getElementById('report-symptoms').textContent = report.symptoms;
+            document.getElementById('report-other').textContent = report.other || 'None';
+            document.getElementById('report-echo').textContent = report.echo;
+            document.getElementById('report-ecg').textContent = report.ecg;
+            
+            // Update medications list
+            const medsList = document.getElementById('report-meds');
+            medsList.innerHTML = '';
+            if (report.meds.length === 0) {
+                medsList.innerHTML = '<li>NA</li>';
+            } else {
+                report.meds.forEach(med => {
+                    const li = document.createElement('li');
+                    li.textContent = med;
+                    medsList.appendChild(li);
+                });
+            }
+            
+            document.getElementById('report-advice').textContent = report.advice || 'No specific advice';
+            document.getElementById('report-nextfu').textContent = report.nextFu || 'Not scheduled';
+
+            // Set the report ID for future operations
+            document.getElementById('consultation-report-container').setAttribute('data-report-id', report.id);
+            
+            // Show the report and hide the form
+            document.getElementById('consultation-report-container').style.display = 'block';
+            document.getElementById('consultation-form-container').style.display = 'none';
+            
+            // Show update button and hide save button
+            document.getElementById('consult-save-btn').style.display = 'none';
+            document.getElementById('consult-update-btn').style.display = 'inline-block';
+        }
+
+        // Delete a consultation report
+        function deleteConsultationReport(reportId) {
+            consultationReports = consultationReports.filter(report => report.id != reportId);
+            localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+            
+            showMessage('Consultation report deleted successfully', 'success');
+            
+            // Refresh the reports list
+            const patientId = document.getElementById('consult-patient-search').value;
+            if (patientId) {
+                const patient = patients.find(p => p.id == patientId);
+                if (patient) {
+                    const savedReports = consultationReports.filter(report => report.patientId == patientId);
+                    if (savedReports.length > 0) {
+                        displaySavedConsultationReports(savedReports, patient);
+                    } else {
+                        document.getElementById('saved-reports-container').style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Refresh saved reports list
+        function refreshSavedReports() {
+            const savedReportsList = document.getElementById('saved-reports-list');
+            savedReportsList.innerHTML = '';
+            
+            if (consultationReports.length === 0) {
+                savedReportsList.innerHTML = '<p>No saved consultation reports found.</p>';
+                return;
+            }
+            
+            // Group reports by patient ID
+            const reportsByPatient = {};
+            consultationReports.forEach(report => {
+                if (!reportsByPatient[report.patientId]) {
+                    reportsByPatient[report.patientId] = [];
+                }
+                reportsByPatient[report.patientId].push(report);
+            });
+            
+            // Display all reports
+            for (const patientId in reportsByPatient) {
+                const patient = patients.find(p => p.id == patientId);
+                if (patient) {
+                    const patientHeader = document.createElement('h4');
+                    patientHeader.textContent = `Patient: ${patient.firstName} ${patient.lastName} (ID: ${patientId})`;
+                    patientHeader.style.marginTop = '15px';
+                    patientHeader.style.marginBottom = '10px';
+                    savedReportsList.appendChild(patientHeader);
+                    
+                    const patientReports = reportsByPatient[patientId];
+                    patientReports.forEach(report => {
+                        const reportItem = document.createElement('div');
+                        reportItem.className = 'saved-report-item';
+                        reportItem.innerHTML = `
+                            <div class="report-meta">
+                                <span>Report ID: ${report.id}</span>
+                                <span>${formatDate(report.date)}</span>
+                            </div>
+                            <div class="report-preview">
+                                <strong>Findings:</strong> ${report.symptoms} | ${report.echo}
+                            </div>
+                            <div class="report-actions">
+                                <button class="report-action-btn view" data-report-id="${report.id}">
+                                    <i class="fas fa-eye"></i> View Report
+                                </button>
+                                <button class="report-action-btn delete" data-report-id="${report.id}">
+                                    <i class="fas fa-trash"></i> Delete Report
+                                </button>
+                            </div>
+                        `;
+                        
+                        savedReportsList.appendChild(reportItem);
+                    });
+                }
+            }
+            
+            // Add event listeners to the buttons
+            document.querySelectorAll('.report-action-btn.view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    const report = consultationReports.find(r => r.id == reportId);
+                    if (report) {
+                        const patient = patients.find(p => p.id == report.patientId);
+                        if (patient) {
+                            // Set the patient ID in search
+                            document.getElementById('consult-patient-search').value = patient.id;
+                            viewConsultationReport(report, patient);
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.report-action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reportId = this.getAttribute('data-report-id');
+                    if (confirm('Are you sure you want to delete this report?')) {
+                        deleteConsultationReport(reportId);
+                    }
+                });
+            });
+        }
+
+        // Refresh appointments table
+        function refreshAppointments(filteredAppointments = null) {
+            const table = document.getElementById('appointments-table');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            const today = new Date().toISOString().split('T')[0];
+            const appointmentsToShow = filteredAppointments || appointments.filter(a => a.date === today);
+
+            appointmentsToShow.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                if (patient) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${appointment.time}</td>
+                        <td>${appointment.patientId}</td>
+                        <td>${patient.firstName} ${patient.lastName}</td>
+                        <td>${patient.mobile}</td>
+                        <td>${appointment.purpose}</td>
+                        <td>${appointment.status}</td>
+                        <td class="action-buttons">
+                            <button class="action-btn delete-btn" onclick="deleteAppointment(${appointment.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        // Refresh database table
+        function refreshDatabase(filteredPatients = null) {
+            const table = document.getElementById('database-table');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            const patientsToShow = filteredPatients || patients;
+
+            patientsToShow.forEach((patient) => {
+                // Calculate age from DOB
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.firstName} ${patient.lastName}</td>
+                    <td>${age}</td>
+                    <td>${patient.sex.charAt(0).toUpperCase()}</td>
+                    <td>${patient.mobile}</td>
+                    <td>${patient.regDate}</td>
+                    <td class="action-buttons">
+                        <button class="action-btn edit-btn" onclick="editPatient(${patient.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deletePatient(${patient.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-btn" style="background: #9b59b6; color: white;" onclick="generateConsultation(${patient.id})">
+                            <i class="fas fa-stethoscope"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Generate consultation report from database
+        function generateConsultation(patientId) {
+            // Switch to consultation section
+            switchSection('consultation-section');
+            
+            // Search for patient
+            document.getElementById('consult-patient-search').value = patientId;
+            
+            // Trigger search
+            document.getElementById('consult-search-btn').click();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-patients').textContent = patients.length;
+
+            const today = new Date();
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            const monthPatients = patients.filter(p => p.regDate >= monthStart).length;
+            document.getElementById('month-patients').textContent = monthPatients;
+
+            const todayStr = today.toISOString().split('T')[0];
+            const todayAppointments = appointments.filter(a => a.date === todayStr).length;
+            document.getElementById('today-appointments').textContent = todayAppointments;
+
+            document.getElementById('due-followups').textContent = '0'; // Simplified for this example
+        }
+
+        // Delete appointment
+        function deleteAppointment(appointmentId) {
+            if (confirm('Are you sure you want to delete this appointment?')) {
+                appointments = appointments.filter(a => a.id !== appointmentId);
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                refreshAppointments();
+                showMessage('Appointment deleted successfully', 'success');
+            }
+        }
+
+        // Delete patient
+        function deletePatient(patientId) {
+            if (confirm('Are you sure you want to delete this patient? All associated data will also be deleted.')) {
+                patients = patients.filter(p => p.id !== patientId);
+                appointments = appointments.filter(a => a.patientId !== patientId);
+                echoReports = echoReports.filter(e => e.patientId !== patientId);
+                consultationReports = consultationReports.filter(c => c.patientId !== patientId);
+                
+                localStorage.setItem('patients', JSON.stringify(patients));
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                localStorage.setItem('echoReports', JSON.stringify(echoReports));
+                localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+                
+                refreshDatabase();
+                updateStats();
+                refreshSavedReports();
+                showMessage('Patient deleted successfully', 'success');
+            }
+        }
+
+        // Edit patient (simplified for this example)
+        function editPatient(patientId) {
+            showMessage('Edit functionality would open a form with patient details', 'info');
+        }
+
+        // Helper functions for messages
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i> ${message}`;
+            
+            // Add to all sections for visibility
+            document.querySelectorAll('.section').forEach(section => {
+                const existingMessage = section.querySelector(`.${type}-message`);
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                section.prepend(messageDiv.cloneNode(true));
+            });
+            
+            setTimeout(() => {
+                document.querySelectorAll(`.${type}-message`).forEach(msg => {
+                    msg.remove();
+                });
+            }, 5000);
+        }
+
+        // Initialize data displays
+        refreshAppointments();
+        refreshDatabase();
+        updateStats();
+    </script>
+</body>
+</html>
