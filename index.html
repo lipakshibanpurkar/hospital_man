@@ -1,0 +1,3687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Office Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .role-selector {
+            display: flex;
+            background: #34495e;
+            padding: 4px;
+            border-radius: 5px;
+        }
+
+        .role-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            background: transparent;
+            color: #ecf0f1;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .role-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 500px;
+        }
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 15px;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            font-size: 18px;
+        }
+
+        .search-container {
+            display: flex;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            flex: 1;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 14px;
+            min-height: 44px;
+        }
+
+        .search-box button {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            min-height: 44px;
+        }
+
+        .patient-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .patient-option {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        .patient-option:hover {
+            background: #f5f5f5;
+        }
+
+        .patient-option:last-child {
+            border-bottom: none;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #ffffff;
+            color: rgb(22, 21, 21);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            min-width: 44px;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        /* Data Table Styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 500px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: #f2f6fc;
+            color: #2c3e50;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 5px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Error and Success Messages */
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Report Styles */
+        .report-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 8px;
+            position: relative;
+        }
+
+        .report-logo-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6eaef1, #c43753);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+            text-align: center;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .report-vama-center {
+            flex: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-vama-striped {
+            font-family: 'Arial Black', 'Arial', sans-serif;
+            font-size: 50px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .report-v {
+            background-image: repeating-linear-gradient(
+                90deg,
+                #448fdf 0px 1px,
+                transparent 3px 5px
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .report-ama {
+            background-image: repeating-linear-gradient(
+                90deg,
+                #c43753 0px 1px,
+                transparent 3px 5px
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .report-clinic-name {
+            font-size: 10px;
+            font-weight: bold;
+            color: #75b0eb;
+            letter-spacing: 0.8px;
+            margin: 0;
+            text-align: center;
+        }
+
+        .report-header-right {
+            flex: 1;
+            text-align: right;
+            font-size: 11px;
+            color: #555;
+        }
+
+        /* ========== DOCTOR SECTION ========== */
+        .report-doctors {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            border-top: 2px solid #3498db;
+            border-bottom: 2px solid #3498db;
+            padding: 6px 0;
+            position: relative;
+        }
+
+        .report-doctors::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 80%;
+            background-color: #3498db;
+        }
+
+        .report-doctor {
+            width: 45%;
+            font-size: 11px;
+            line-height: 1.3;
+            padding: 0 8px;
+        }
+
+        .report-doctor b {
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        /* Patient Info */
+        .report-patient-info {
+            margin-top: 12px;
+            padding: 10px;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+
+        .report-patient-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-patient-info td {
+            padding: 5px 6px;
+            vertical-align: top;
+        }
+
+        .report-patient-info b {
+            color: #2c3e50;
+        }
+
+        .report-title {
+            text-align: center;
+            margin: 20px 0 12px;
+            font-weight: bold;
+            font-size: 15px;
+            text-decoration: underline;
+            color: #2c3e50;
+        }
+
+        .report-body {
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 0 8px;
+        }
+
+        .report-body b {
+            color: #0e0c0c;
+        }
+
+        .report-signature {
+            margin-top: 40px;
+            font-size: 12px;
+            text-align: right;
+            padding-right: 15px;
+        }
+
+        .report-signature b {
+            color: #2c3e50;
+        }
+
+        /* Footer */
+        .report-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #0073e6;
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            padding: 6px 0;
+        }
+
+        /* Report Controls */
+        .report-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .report-controls button {
+            padding: 8px 12px;
+            background: #eaf0fb;
+            color: #1a3d7c;
+            border: 1px solid #1a3d7c;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preset-btn {
+            background: #eaf0fb !important;
+            color: #1a3d7c !important;
+        }
+
+        .save-btn {
+            background: #1a73e8 !important;
+            color: white !important;
+            border-color: #1a73e8 !important;
+        }
+
+        .print-btn {
+            background: #34a853 !important;
+            color: white !important;
+            border-color: #34a853 !important;
+        }
+
+        .pdf-btn {
+            background: #ea4335 !important;
+            color: white !important;
+            border-color: #ea4335 !important;
+        }
+
+        .edit-btn {
+            background: #fbbc04 !important;
+            color: white !important;
+            border-color: #fbbc04 !important;
+        }
+
+        .excel-btn {
+            background: #0f9d58 !important;
+            color: white !important;
+            border-color: #0f9d58 !important;
+        }
+
+        /* Patient Details Display */
+        .patient-details {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .patient-details h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .patient-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .patient-detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .patient-detail-label {
+            font-weight: bold;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .patient-detail-value {
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        /* Loading states for reports */
+        .report-loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .report-loading.spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== MOBILE REPORT STYLES ========== */
+        @media (max-width: 767px) {
+            body {
+                -webkit-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+                padding: 0;
+                padding-bottom: 70px;
+                background: white;
+            }
+            
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            .content-area {
+                padding: 10px;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            /* Report container for mobile */
+            .report-container-mobile {
+                width: 100%;
+                overflow: hidden;
+                padding: 0;
+                background: white;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            /* Report page for mobile - A4 proportions with no margins */
+            .report-page {
+                width: 100% !important;
+                min-height: auto !important;
+                padding: 10px !important;
+                margin: 0 !important;
+                box-shadow: none;
+                transform: none;
+                transform-origin: top center;
+                border: none;
+            }
+            
+            /* Keep doctors in straight line on mobile with blue lines */
+            .report-doctors {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                margin-top: 8px;
+                border-top: 2px solid #3498db;
+                border-bottom: 2px solid #3498db;
+                padding: 6px 0;
+                position: relative;
+            }
+            
+            .report-doctors::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 2px;
+                height: 80%;
+                background-color: #3498db;
+            }
+            
+            .report-doctor {
+                width: 48% !important;
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+                text-align: left !important;
+                padding: 0 4px;
+            }
+            
+            .report-doctor:last-child {
+                text-align: right !important;
+            }
+            
+            .report-doctor br {
+                display: block !important;
+            }
+            
+            /* Header adjustments for mobile */
+            .report-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 8px 0;
+            }
+            
+            .report-logo-container {
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+            
+            .report-logo {
+                width: 50px;
+                height: 50px;
+                font-size: 8px;
+            }
+            
+            .report-vama-center {
+                margin: 8px 0;
+            }
+            
+            .report-vama-striped {
+                font-size: 28px !important;
+                letter-spacing: 1.5px;
+            }
+            
+            .report-clinic-name {
+                font-size: 9px !important;
+                margin-top: 4px;
+            }
+            
+            .report-header-right {
+                text-align: center;
+                font-size: 9px;
+                margin-top: 4px;
+            }
+            
+            /* Patient info table for mobile */
+            .report-patient-info table {
+                font-size: 10px;
+            }
+            
+            .report-patient-info td {
+                padding: 3px 5px;
+            }
+            
+            /* Report content - keep original formatting */
+            .report-title {
+                font-size: 13px;
+                margin: 12px 0 8px;
+            }
+            
+            .report-body {
+                font-size: 11px !important;
+                line-height: 1.4;
+                padding: 0 4px;
+            }
+            
+            .report-section {
+                margin: 10px 0;
+            }
+            
+            .report-echo-section span {
+                font-size: 0.9rem !important;
+            }
+            
+            .report-findings-list,
+            .report-advice-list {
+                margin-left: 12px;
+                font-size: 10px;
+            }
+            
+            .report-signature {
+                margin-top: 25px;
+                font-size: 10px;
+                padding-right: 0;
+            }
+            
+            .report-footer {
+                font-size: 12px;
+                padding: 5px 0;
+                line-height: 1.2;
+                position: relative;
+            }
+            
+            /* Report Controls for Mobile */
+            .report-controls {
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 15px;
+                padding: 0 10px;
+            }
+            
+            .report-controls button {
+                width: 100%;
+                padding: 10px;
+                font-size: 13px;
+                margin: 1px 0;
+            }
+            
+            /* Patient Details Mobile Optimization */
+            .patient-details-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .patient-detail-item {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 8px;
+                background: #f8f9fa;
+                border-radius: 5px;
+            }
+            
+            .patient-detail-label {
+                font-size: 11px;
+            }
+            
+            .patient-detail-value {
+                font-size: 12px;
+                text-align: right;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Remove margins from sections on mobile */
+            .section {
+                padding: 0;
+            }
+            
+            h2 {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            
+            .search-container {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            
+            .data-table-container {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+        }
+
+        /* Additional Mobile Optimizations for very small screens */
+        @media (max-width: 480px) {
+            .report-vama-striped {
+                font-size: 24px !important;
+                letter-spacing: 1px;
+            }
+            
+            .report-doctor {
+                font-size: 8px !important;
+            }
+            
+            .report-patient-info table {
+                font-size: 9px;
+            }
+            
+            .report-body {
+                font-size: 10px !important;
+            }
+            
+            .report-footer {
+                font-size: 11px;
+            }
+            
+            /* Better scrolling for reports */
+            .report-container-mobile {
+                padding: 0;
+            }
+            
+            .report-page {
+                padding: 8px !important;
+            }
+            
+            .report-controls,
+            .report-buttons {
+                gap: 4px;
+            }
+            
+            .report-controls button,
+            .report-btn {
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2c3e50;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(44, 62, 80, 0.95);
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            min-height: 44px;
+            min-width: 44px;
+            justify-content: center;
+        }
+
+        .mobile-nav-item.active {
+            background: #3498db;
+        }
+
+        .mobile-nav-item i {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 20px;
+            }
+            
+            .mobile-nav {
+                display: none;
+            }
+            
+            .sidebar {
+                display: block;
+            }
+            
+            .nav-items-container {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                padding: 15px 20px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .patient-info {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .report-page, .report-page * {
+                visibility: visible;
+            }
+            .report-page {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                margin: 0;
+                padding: 15mm;
+            }
+            
+            .report-controls,
+            .report-buttons,
+            .mobile-nav {
+                display: none !important;
+            }
+        }
+
+        /* ========== CONSULTATION REPORT STYLES ========== */
+        .consultation-section {
+            background: white;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .consultation-field {
+            /* margin-bottom: 1px; */
+            display: flex;
+            align-items: center;
+        }
+        
+        .consultation-field label {
+                width: 60px;
+    margin-left: 12px;
+    margin-bottom: 0;
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 10px;
+        }
+        
+        .field-value {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .edit-mode .field-value {
+            border: 2px dashed #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .dropdown-toggle {
+            min-width: 20px;
+        }
+        
+        .symptoms-list, .medications-list, .advice-list {
+            margin-left: 20px;
+        }
+        
+        .list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .list-item-content {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .edit-mode .list-item-content {
+            border: 2px dashed #3498db;
+            background-color: #f8f9fa;
+        }
+        
+        .edit-indicator {
+            color: #3498db;
+            margin-left: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .edit-mode .edit-indicator {
+            opacity: 1;
+        }
+        
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .calendar-popup {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 10px;
+        }
+        
+        .calendar-popup table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .calendar-popup th, .calendar-popup td {
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        
+        .calendar-popup td:hover {
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .consultation-field {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            
+            .consultation-field label {
+                width: 100%;
+                margin-bottom: 5px;
+                margin-right: 0;
+            }
+            
+            .field-value {
+                width: 100%;
+            }
+            
+            .consultation-section {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Hide dropdowns and edit indicators in non-edit mode */
+        .consultation-report-container .dropdown {
+            display: none;
+        }
+        
+        .consultation-report-container .edit-indicator {
+            display: none;
+        }
+        
+        .consultation-report-container .field-value,
+        .consultation-report-container .list-item-content {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        
+        /* Show dropdowns and edit indicators in edit mode */
+        .consultation-report-container.edit-mode .dropdown {
+            display: block;
+        }
+        
+        .consultation-report-container.edit-mode .edit-indicator {
+            display: inline;
+        }
+        
+        .consultation-report-container.edit-mode .field-value,
+        .consultation-report-container.edit-mode .list-item-content {
+            border: 2px dashed #3498db !important;
+            background-color: #f8f9fa !important;
+            padding: 6px 10px !important;
+        }
+
+        /* Consultation Report Buttons */
+        .consultation-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .consultation-btn {
+            padding: 6px 10px;
+            background: #eaf0fb;
+            border: 1px solid #1a3d7c;
+            border-radius: 4px;
+            color: #1a3d7c;
+            cursor: pointer;
+            font-size: 12px;
+            min-height: 36px;
+        }
+
+        .consultation-btn:hover {
+            background: #d4e2fc;
+        }
+
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .password-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* Device Section */
+        .device-section {
+            margin: 12px 0;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .device-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>MedOffice Manager</span>
+            </div>
+            <div class="user-info">
+                <div class="role-selector">
+                    <button class="role-btn active" id="receptionist-btn">Receptionist</button>
+                    <button class="role-btn" id="admin-btn">Administrator</button>
+                </div>
+                <div class="time">
+                    <span id="current-time">15:21</span> | <span id="current-date">12-09-2025</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="nav-items-container">
+                    <div class="nav-item" data-target="form-section">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Patient Form</span>
+                    </div>
+                    <div class="nav-item active" data-target="appointments-section">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="echo-reports-section">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Echo Reports</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="consultation-section">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Consultation</span>
+                    </div>
+                    <div class="nav-item admin-only" data-target="database-section">
+                        <i class="fas fa-database"></i>
+                        <span>Database</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Patient Form Section -->
+                <div class="section" id="form-section">
+                    <h2>Patient Registration Form</h2>
+                    <div class="patient-id">Patient ID: <span id="patient-id">5041160</span></div>
+
+                    <div class="form-grid">
+                        <div>
+                            <div class="form-group">
+                                <label for="first-name">First Name *</label>
+                                <input type="text" id="first-name" placeholder="Enter first name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name *</label>
+                                <input type="text" id="last-name" placeholder="Enter last name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sex">Sex *</label>
+                                <select id="sex" required>
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile">Mobile No *</label>
+                                <input type="tel" id="mobile" placeholder="Enter mobile number" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="form-group">
+                                <label for="address">Address *</label>
+                                <textarea id="address" placeholder="Enter full address" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth *</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg) *</label>
+                                <input type="number" id="weight" placeholder="Enter weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm) *</label>
+                                <input type="number" id="height" placeholder="Enter height" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bp">Blood Pressure</label>
+                                <input type="text" id="bp" placeholder="e.g., 120/80">
+                            </div>
+                            <div class="form-group">
+                                <label for="hr">Heart Rate (BPM)</label>
+                                <input type="number" id="hr" placeholder="e.g., 72">
+                            </div>
+                            <div class="form-group">
+                                <label for="spo2">SpO2 (%)</label>
+                                <input type="number" id="spo2" placeholder="e.g., 98" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="appointment-date">Date of Appointment *</label>
+                                <input type="date" id="appointment-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointment-time">Time of Appointment *</label>
+                                <input type="time" id="appointment-time" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn" id="submit-btn">
+                        <i class="fas fa-check"></i> Submit
+                    </button>
+                    <button class="btn" id="clear-btn">
+                        <i class="fas fa-times"></i> Clear Form
+                    </button>
+                </div>
+
+                <!-- Appointments Section -->
+                <div class="section active" id="appointments-section">
+                    <h2>Appointments Management</h2>
+                    
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="search-appointments" placeholder="Search by patient ID, name, or mobile...">
+                            <button id="search-appointments-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div id="appointments-search-results">
+                        <!-- Patient details will appear here -->
+                    </div>
+                    
+                    <!-- Table View for Appointments -->
+                    <div class="data-table-container">
+                        <table class="data-table" id="appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Patient ID</th>
+                                    <th>Patient Name</th>
+                                    <th>Mobile</th>
+                                    <th>Purpose</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointments-table-body">
+                                <!-- Appointments will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Echo Reports Section -->
+                <div class="section" id="echo-reports-section">
+                    <h2>Echocardiography Reports</h2>
+                    
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="echo-patient-search" placeholder="Search by Patient ID or Name">
+                            <button id="echo-search-btn"><i class="fas fa-search"></i> Search</button>
+                        </div>
+                        <div class="patient-dropdown" id="echo-patient-dropdown">
+                            <!-- Patient options will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="echo-search-results">
+                        <!-- Error/Success messages will appear here -->
+                    </div>
+                    
+                    <!-- Loading indicator for echo reports -->
+                    <div class="report-loading" id="echo-report-loading">
+                        <div class="spinner"></div>
+                        <p>Loading Echo Report...</p>
+                    </div>
+                    
+                    <!-- Echo Report Template with Mobile Container -->
+                    <div class="report-container-mobile">
+                        <div class="report-page" id="echo-report-container" style="display: none;">
+                            <div class="report-header">
+                                <div class="report-logo-container">
+                                    <div class="report-logo">
+                                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcwIiBoZWlnaHQ9IjcwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzE3XzQzKSIvPgo8cGF0aCBkPSJNMzUgMTdWNTNNMTcgMzVINTNNNDEuNSAyOC41QzQxLjUgMzUuNDA1NyAzNS45NTQ5IDQxIDI5IDQxQzIyLjA0NTEgNDEgMTYuNSAzNS40MDU3IDE2LjUgMjguNUMxNi41IDIxLjU5NDMgMjIuMDQ1MSAxNiAyOSAxNkMzNS45NTQ5IDE2IDQxLjUgMjEuNTk0MyA0MS41IDI4LjVaIiBmaWxsPSJ3aGl0ZSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzE3XzQzIiB4MT0iMzUiIHkxPSIwIiB4Mj0iMzUiIHkyPSI3MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNkVBRUYxIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0M0Mzc1MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" alt="Clinic Logo">
+                                    </div>
+                                </div>
+                                
+                                <!-- VAMA Striped Text in the middle with clinic name below -->
+                                <div class="report-vama-center">
+                                    <div class="report-vama-striped">
+                                        <span class="report-v">V</span><span class="report-ama">AMA</span>
+                                    </div>
+                                    <p class="report-clinic-name">TINY HEARTS & THE KIDNEY CLINIC</p>
+                                </div>
+                                
+                                <div class="report-header-right"></div>
+                            </div>
+
+                            <!-- Doctors Section - Same layout for both desktop and mobile -->
+                            <div class="report-doctors">
+                                <div class="report-doctor">
+                                    <b>Dr. Madhavi Dadwe</b><br>
+                                    MBBS MD DrNB (Nephrology)<br>
+                                    Consultant Nephrologist & Transplant Physician<br>
+                                    +91 91725 20489<br>
+                                    vamathekidneyclinic@gmail.com
+                                </div>
+                                
+                                <div class="report-doctor" style="text-align:right;">
+                                    <b>Dr. Ashishkumar Banpurkar</b><br>
+                                    MBBS MD DrNB (Pediatric Cardiology)<br>
+                                    Consultant Fetal & Pediatric Cardiologist<br>
+                                    +91 93709 94757<br>
+                                    vamatinyhearts@gmail.com
+                                </div>
+                            </div>
+
+                            <!-- Patient Info -->
+                            <div class="report-patient-info">
+                                <table>
+                                    <tr>
+                                        <td><b>Name:</b> <span id="echo-patient-name">-</span></td>
+                                        <td><b>Date:</b> <span id="echo-report-date">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Age:</b> <span id="echo-patient-age">-</span></td>
+                                        <td><b>HR:</b> <span id="echo-patient-hr">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Indication:</b> <span id="echo-indication">-</span></td>
+                                        <td><b>Weight:</b> <span id="echo-patient-weight">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Ref:</b> <span id="echo-referral-doctor">-</span></td>
+                                        <td><b>BP:</b> <span id="echo-patient-bp">-</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="report-title">ECHOCARDIOGRAPHY REPORT</div>
+
+                            <div class="report-body" id="echo-content" contenteditable="false">
+                                No patient data available. Please search for a patient first.
+                            </div>
+
+                            <!-- Doctor signature -->
+                            <div class="report-signature">
+                                <b>Dr Ashishkumar Banpurkar</b><br>
+                                MBBS MD DrNB (Pediatric Cardiology)<br>
+                                Consultant Pediatric & Fetal Cardiologist
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="report-footer">
+                                Vama Tiny Hearts & The Kidney Clinic | 203, 2nd Floor, <br>City centre Opp. Vaibhav Talkies, Hadapsar Pune 411028  
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-controls" id="echo-controls">
+                        <button class="preset-btn" onclick="applyEchoPreset('Normal')">
+                            <i class="fas fa-heartbeat"></i> Normal
+                        </button>
+                        <button class="preset-btn" onclick="applyEchoPreset('ASD')">
+                            <i class="fas fa-heart"></i> ASD
+                        </button>
+                        <button class="preset-btn" onclick="applyEchoPreset('PDA')">
+                            <i class="fas fa-heart"></i> PDA
+                        </button>
+                        <button class="preset-btn" onclick="applyEchoPreset('VSD')">
+                            <i class="fas fa-heart"></i> VSD
+                        </button>
+                        <button class="preset-btn" onclick="applyEchoPreset('TOF')">
+                            <i class="fas fa-heart"></i> TOF
+                        </button>
+                        <button class="save-btn" id="echo-save-btn">
+                            <i class="fas fa-save"></i> Save Report
+                        </button>
+                        <button class="print-btn" id="echo-print-btn">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="pdf-btn" id="echo-pdf-btn">
+                            <i class="fas fa-file-pdf"></i> Save as PDF
+                        </button>
+                        <button class="edit-btn" id="echo-edit-btn">
+                            <i class="fas fa-edit"></i> Edit Report
+                        </button>
+                    </div>
+                    
+                    <!-- Echo Report Buttons (shown in edit mode) -->
+                    <div class="echo-buttons" id="echo-buttons" style="display: none;">
+                        <button class="echo-btn" data-text="STRUCTURALLY NORMAL HEART">Normal Heart</button>
+                        <button class="echo-btn" data-text="CHAMBERS AND SEPTUM: - Left atrium: Normal size - Right atrium: Normal size   - Left ventricle: Normal dimensions and wall thickness - Right ventricle: Normal dimensions - Interatrial septum: Intact - Interventricular septum: Intact">Chambers & Septum</button>
+                        <button class="echo-btn" data-text="VALVES: - Mitral valve: Normal morphology, no regurgitation - Tricuspid valve: Normal morphology, no regurgitation - Aortic valve: Normal morphology, no stenosis/regurgitation - Pulmonary valve: Normal morphology">Valves</button>
+                        <button class="echo-btn" data-text="GREAT VESSELS: - Aorta: Normal dimensions, left aortic arch - Pulmonary artery: Normal dimensions, confluent branch PAs - No evidence of coarctation or PDA">Great Vessels</button>
+                        <button class="echo-btn" data-text="VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 60-65%) - Right ventricular systolic function: Normal - No regional wall motion abnormalities">Ventricular Function</button>
+                        <button class="echo-btn" data-text="PERICARDIUM: - No pericardial effusion - Normal pericardial thickness">Pericardium</button>
+                        <button class="echo-btn" data-text="CORONARY ARTERIES: - Normal origin and course">Coronary Arteries</button>
+                    </div>
+                </div>
+
+                <!-- Consultation Report Section -->
+                <div class="section" id="consultation-section">
+                    <h2>Consultation Report</h2>
+                    
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="consult-patient-search" placeholder="Search by Patient ID or Name">
+                            <button id="consult-search-btn"><i class="fas fa-search"></i> Search</button>
+                        </div>
+                        <div class="patient-dropdown" id="consult-patient-dropdown">
+                            <!-- Patient options will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="consult-search-results">
+                        <!-- Error/Success messages will appear here -->
+                    </div>
+                    
+                    <!-- Loading indicator for consultation reports -->
+                    <div class="report-loading" id="consult-report-loading">
+                        <div class="spinner"></div>
+                        <p>Loading Consultation Report...</p>
+                    </div>
+                    
+                    <!-- Consultation Report Template with Mobile Container -->
+                    <div class="report-container-mobile">
+                        <div class="report-page consultation-report-container" id="consultation-report-container" style="display: none;">
+                            <div class="report-header">
+                                <div class="report-logo-container">
+                                    <div class="report-logo">
+                                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcwIiBoZWlnaHQ9IjcwIiByeD0iOCIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzE3XzQzKSIvPgo8cGF0aCBkPSJNMzUgMTdWNTNNMTcgMzVINTNNNDEuNSAyOC41QzQxLjUgMzUuNDA1NyAzNS45NTQ5IDQxIDI5IDQxQzIyLjA0NTEgNDEgMTYuNSAzNS40MDU3IDE2LjUgMjguNUMxNi41IDIxLjU5NDMgMjIuMDQ1MSAxNiAyOSAxNkMzNS45NTQ5IDE2IDQxLjUgMjEuNTk0MyA0MS41IDI4LjVaIiBmaWxsPSJ3aGl0ZSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzE3XzQzIiB4MT0iMzUiIHkxPSIwIiB4Mj0iMzUiIHkyPSI3MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNkVBRUYxIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0M0Mzc1MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" alt="Clinic Logo">
+                                    </div>
+                                </div>
+                                
+                                <!-- VAMA Striped Text in the middle with clinic name below -->
+                                <div class="report-vama-center">
+                                    <div class="report-vama-striped">
+                                        <span class="report-v">V</span><span class="report-ama">AMA</span>
+                                    </div>
+                                    <p class="report-clinic-name">TINY HEARTS & THE KIDNEY CLINIC</p>
+                                </div>
+                                
+                                <div class="report-header-right"></div>
+                            </div>
+
+                            <!-- Doctors Section - Same layout for both desktop and mobile -->
+                            <div class="report-doctors">
+                                <div class="report-doctor">
+                                    <b>Dr. Madhavi Dadwe</b><br>
+                                    MBBS MD DrNB (Nephrology)<br>
+                                    Consultant Nephrologist & Transplant Physician<br>
+                                    +91 91725 20489<br>
+                                    vamathekidneyclinic@gmail.com
+                                </div>
+                                
+                                <div class="report-doctor" style="text-align:right;">
+                                    <b>Dr. Ashishkumar Banpurkar</b><br>
+                                    MBBS MD DrNB (Pediatric Cardiology)<br>
+                                    Consultant Fetal & Pediatric Cardiologist<br>
+                                    +91 93709 94757<br>
+                                    vamatinyhearts@gmail.com
+                                </div>
+                            </div>
+
+                            <!-- Patient Info -->
+                            <div class="report-patient-info">
+                                <table>
+                                    <tr>
+                                        <td><b>Name:</b> <span id="consult-patient-name">-</span></td>
+                                        <td><b>Date:</b> <span id="consult-report-date">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Age:</b> <span id="consult-patient-age">-</span></td>
+                                        <td><b>HR:</b> <span id="consult-patient-hr">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Indication:</b> <span id="consult-indication">-</span></td>
+                                        <td><b>Weight:</b> <span id="consult-patient-weight">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Ref:</b> <span id="consult-referral">-</span></td>
+                                        <td><b>SPo2:</b> <span id="consult-patient-spo2">-</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Consultation Fields Section - 2x2 Layout -->
+                            <div class="consultation-section">
+                                <div class="two-column-layout">
+                                    <!-- Column 1 -->
+                                    <div>
+                                        <div class="consultation-field">
+                                            <label>S1:</label>
+                                            <div class="field-value" id="s1-text" contenteditable="false">Normal</div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="s1-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="s1-dropdown">
+                                                    <li><a class="dropdown-item" href="#" data-value="Normal">Normal</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Abnormal">Abnormal</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Loud">Loud</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Soft">Soft</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Variable">Variable</a></li>
+                                                </ul>
+                                            </div>
+                                            <span class="edit-indicator">✎</span>
+                                        </div>
+                                        
+                                        <div class="consultation-field">
+                                            <label>S2:</label>
+                                            <div class="field-value" id="s2-text">Normal</div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="s2-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                   
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="s2-dropdown">
+                                                    <li><a class="dropdown-item" href="#" data-value="Normal">Normal</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Wide">Wide</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Fixed Split">Fixed Split</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Loud P2">Loud P2</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Single">Single</a></li>
+                                                </ul>
+                                            </div>
+                                            <span class="edit-indicator">✎</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Column 2 -->
+                                    <div>
+                                        <div class="consultation-field">
+                                            <label>MURMUR:</label>
+                                            <div class="field-value" id="murmur-text">No additional Sound</div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="murmur-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="murmur-dropdown">
+                                                    <li><a class="dropdown-item" href="#" data-value="No additional Sound">No additional Sound</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Systolic murmur">Systolic murmur</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Diastolic murmur">Diastolic murmur</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Continuous murmur">Continuous murmur</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Ejection systolic murmur">Ejection systolic murmur</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Pansystolic murmur">Pansystolic murmur</a></li>
+                                                </ul>
+                                            </div>
+                                            <span class="edit-indicator">✎</span>
+                                        </div>
+                                        
+                                        <div class="consultation-field">
+                                            <label>Indication:</label>
+                                            <div class="field-value" id="indication-text">Incidental Detection of murmur</div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="indication-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="indication-dropdown">
+                                                    <li><a class="dropdown-item" href="#" data-value="Incidental Detection of murmur">Incidental Detection of murmur</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Desaturation to rule out CHD">Desaturation to rule out CHD</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Follow-up for known CHD">Follow-up for known CHD</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Chest pain evaluation">Chest pain evaluation</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-value="Syncope evaluation">Syncope evaluation</a></li>
+                                                </ul>
+                                            </div>
+                                            <span class="edit-indicator">✎</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                            <div class="report-title">CONSULTATION REPORT</div>
+                            
+                            <!-- ANC Section -->
+                            <div class="consultation-section">
+                                <div class="consultation-field">
+                                    <label>ANC Detail:</label>
+                                    <div class="field-value" id="anc-detail">Not Significant</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="anc-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                           
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="anc-dropdown">
+                                            <li><a class="dropdown-item" href="#" data-value="Not Significant">Not Significant</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="Significant">Significant</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="Gestational Diabetes">Gestational Diabetes</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="Pregnancy Induced Hypertension">Pregnancy Induced Hypertension</a></li>
+                                        </ul>
+                                    </div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                                
+                                <div class="consultation-field">
+                                    <label>Perinatal Detail:</label>
+                                    <div class="field-value" id="install-detail">FT/AGA/LSCS/CIAB/B Weight- /No NICU Stay</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="install-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                           
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="install-dropdown">
+                                            <li><a class="dropdown-item" href="#" data-value="FT/AGA/LSCS/CIAB/B Weight- /No NICU Stay">FT/AGA/LSCS/CIAB/B Weight- /No NICU Stay</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="FT/AGA/NSD/B Weight- /No NICU Stay">FT/AGA/NSD/B Weight- /No NICU Stay</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="PT/LSCS/CIAB/B Weight- /NICU Stay">PT/LSCS/CIAB/B Weight- /NICU Stay</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="PT/AGA/NSD/B Weight- /NICU Stay">PT/AGA/NSD/B Weight- /NICU Stay</a></li>
+                                        </ul>
+                                    </div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Device Section -->
+                            <div class="consultation-section">
+                                <div class="section-title">Device</div>
+                                <div class="consultation-field">
+                                    <label>Device Type:</label>
+                                    <div class="field-value" id="device-type">No Device</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="device-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="device-dropdown">
+                                            <li><a class="dropdown-item" href="#" data-value="No Device">No Device</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="Pacemaker">Pacemaker</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="ICD">ICD</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="CRT">CRT</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="LVAD">LVAD</a></li>
+                                        </ul>
+                                    </div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Symptoms Section -->
+                            <div class="consultation-section">
+                                <div class="section-title">Symptoms</div>
+                                <div id="symptoms-list">
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">Suck-Peat-Suck Cycle</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                               
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="Suck-Peat-Suck Cycle">Suck-Peat-Suck Cycle</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Fast Breathing">Fast Breathing</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Poor Feeding">Poor Feeding</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Cyanosis">Cyanosis</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Sweating during feeds">Sweating during feeds</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Other Significant Section -->
+                            <div class="consultation-section">
+                                <div class="section-title">Other Significant</div>
+                                
+                                <div class="consultation-field">
+                                    <label>ECHO:</label>
+                                    <div class="field-value" id="echo-findings">Large sized perimenbranous ventricular septal defect with left to right shunt</div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                                
+                                <div class="consultation-field">
+                                    <label>ECG:</label>
+                                    <div class="field-value" id="ecg-findings">-</div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Medications Section -->
+                            <div class="consultation-section">
+                                <div class="section-title">Medications</div>
+                                <div id="medications-list">
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">NA</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                               
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="NA">NA</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Furosemide">Furosemide</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Spironolactone">Spironolactone</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Captopril">Captopril</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Propranolol">Propranolol</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">NA</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                              
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="NA">NA</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Furosemide">Furosemide</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Spironolactone">Spironolactone</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Captopril">Captopril</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Propranolol">Propranolol</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Advice Section -->
+                            <div class="consultation-section">
+                                <div class="section-title">Advice</div>
+                                <div id="advice-list">
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">Routine Neonatal Care</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                               
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="Routine Neonatal Care">Routine Neonatal Care</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Specialized Neonatal Care">Specialized Neonatal Care</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="NICU Monitoring">NICU Monitoring</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">Immunisation as per schedule</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                             
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="Immunisation as per schedule">Immunisation as per schedule</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Delayed Immunisation">Delayed Immunisation</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Custom Immunisation Schedule">Custom Immunisation Schedule</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">Avoid Contact Sports X 1 month</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                         
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="Avoid Contact Sports X 1 month">Avoid Contact Sports X 1 month</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Avoid Contact Sports X 3 months">Avoid Contact Sports X 3 months</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="No restrictions">No restrictions</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">Regular Diet</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                             
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="Regular Diet">Regular Diet</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Special Diet">Special Diet</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="Fluid Restriction">Fluid Restriction</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                    <div class="list-item">
+                                        <div class="list-item-content" contenteditable="false">To Review with Consultant Neonatologist/Pediatrician</div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                             
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-value="To Review with Consultant Neonatologist/Pediatrician">To Review with Consultant Neonatologist/Pediatrician</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="To Review with Pediatric Cardiologist">To Review with Pediatric Cardiologist</a></li>
+                                                <li><a class="dropdown-item" href="#" data-value="To Review with Pediatric Surgeon">To Review with Pediatric Surgeon</a></li>
+                                            </ul>
+                                        </div>
+                                        <span class="edit-indicator">✎</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Next Follow-up -->
+                            <div class="consultation-section">
+                                <div class="section-title">Next Follow-up</div>
+                                <div class="consultation-field">
+                                    <label>Date:</label>
+                                    <div class="field-value" id="next-followup">1 week</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="calendar-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-calendar"></i> Calendar
+                                        </button>
+                                        <div class="dropdown-menu p-3" style="min-width: 300px;">
+                                            <div id="calendar-popup">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <button class="btn btn-sm btn-outline-secondary" id="prev-month"><</button>
+                                                    <h6 id="current-month" class="mb-0">September 2023</h6>
+                                                    <button class="btn btn-sm btn-outline-secondary" id="next-month">></button>
+                                                </div>
+                                                <div id="calendar-dates" class="d-grid gap-1" style="grid-template-columns: repeat(7, 1fr);">
+                                                    <!-- Calendar dates will be generated here -->
+                                                </div>
+                                                <div class="mt-2">
+                                                    <button class="btn btn-sm btn-outline-primary w-100" id="set-custom-date">Set Custom Date</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="edit-indicator">✎</span>
+                                </div>
+                            </div>
+
+                            <!-- Doctor signature -->
+                            <div class="report-signature">
+                                <b>Dr Ashishkumar M Banpurkar</b><br>
+                                MBBS, MD, DIME (Pediatric Cardiology)<br>
+                                Consultant Pediatric & Fetal Cardiologist
+                            </div>
+<style>
+    body {
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-title {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .consultation-section {
+        margin-bottom: 10px;
+        padding: 5px 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .section-title {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .consultation-field {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .consultation-field label {
+        font-weight: bold;
+        margin-right: 5px;
+        min-width: 50px;
+    }
+
+    .field-value {
+        margin-right: 10px;
+        font-size: 12px;
+    }
+
+    .dropdown-toggle {
+        padding: 2px 6px;
+        font-size: 11px;
+    }
+
+    .dropdown-menu {
+        font-size: 12px;
+    }
+
+    .edit-indicator {
+        margin-left: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #f3f1f1;
+    }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .list-item-content {
+        margin-right: 10px;
+        font-size: 12px;
+    }
+
+    .report-signature {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 12px;
+        line-height: 1.4;
+        padding: 10px;
+    }
+
+    /* Reduce button padding */
+    .btn {
+        padding: 2px 6px;
+        font-size: 11px;
+    }
+
+    /* Reduce calendar popup spacing */
+    #calendar-popup {
+        font-size: 12px;
+    }
+
+    /* Optional: Remove vertical spacing completely */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+</style>
+
+                            <!-- Footer -->
+                            <div class="report-footer">
+                                Vama Tiny Hearts & The Kidney Clinic | 203, 2nd Floor, <br>City centre Opp. Vaibhav Talkies, Hadapsar Pune 411028  
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-controls">
+                        <button class="btn btn-primary" id="edit-toggle-btn">
+                            <i class="fas fa-edit"></i> Enable Edit Mode
+                        </button>
+                        <button class="save-btn" id="consult-save-btn">
+                            <i class="fas fa-save"></i> Save Report
+                        </button>
+                        <button class="print-btn" id="consult-print-btn">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="pdf-btn" id="consult-pdf-btn">
+                            <i class="fas fa-file-pdf"></i> Save as PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Database Section -->
+                <div class="section" id="database-section">
+                    <h2>Patient Database</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Patients</h3>
+                            <div class="value" id="total-patients">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>New This Month</h3>
+                            <div class="value" id="month-patients">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Appointments Today</h3>
+                            <div class="value" id="today-appointments">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Follow-ups Due</h3>
+                            <div class="value" id="due-followups">0</div>
+                        </div>
+                    </div>
+
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="search-database" placeholder="Search by patient ID, name, or mobile...">
+                            <button id="search-database-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="database-table">
+                            <thead>
+                                <tr>
+                                    <th>Reg No</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Sex</th>
+                                    <th>Mobile</th>
+                                    <th>Last Visit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Patients will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn excel-btn" id="export-all-data-btn">
+                            <i class="fas fa-file-excel"></i> Export All Data to Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="password-modal" id="password-modal">
+        <div class="password-content">
+            <div class="password-title">Administrator Access</div>
+            <p>Please enter the administrator password:</p>
+            <input type="password" class="password-input" id="admin-password" placeholder="Enter password">
+            <button class="password-btn" id="submit-password">Submit</button>
+            <p style="margin-top: 15px; font-size: 12px; color: #7f8c8d;">Hint: The password is "1"</p>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-nav">
+        <a href="#" class="mobile-nav-item" data-target="form-section">
+            <i class="fas fa-user-plus"></i>
+            <span>Patient</span>
+        </a>
+        <a href="#" class="mobile-nav-item active" data-target="appointments-section">
+            <i class="fas fa-calendar-check"></i>
+            <span>Appointments</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="echo-reports-section">
+            <i class="fas fa-file-medical"></i>
+            <span>Echo</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="consultation-section">
+            <i class="fas fa-stethoscope"></i>
+            <span>Consult</span>
+        </a>
+        <a href="#" class="mobile-nav-item admin-only" data-target="database-section">
+            <i class="fas fa-database"></i>
+            <span>Database</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data storage
+        let patients = JSON.parse(localStorage.getItem('patients')) || [];
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+        let echoReports = JSON.parse(localStorage.getItem('echoReports')) || [];
+        let consultationReports = JSON.parse(localStorage.getItem('consultationReports')) || [];
+        let isAdmin = false;
+
+        // Echo Report Presets
+        const echoPresets = {
+            Normal: {
+                content: `STRUCTURALLY NORMAL HEART
+
+CHAMBERS AND SEPTUM: - Left atrium: Normal size - Right atrium: Normal size   - Left ventricle: Normal dimensions and wall thickness - Right ventricle: Normal dimensions - Interatrial septum: Intact - Interventricular septum: Intact
+
+VALVES: - Mitral valve: Normal morphology, no regurgitation - Tricuspid valve: Normal morphology, no regurgitation - Aortic valve: Normal morphology, no stenosis/regurgitation - Pulmonary valve: Normal morphology
+GREAT VESSELS: - Aorta: Normal dimensions, left aortic arch - Pulmonary artery: Normal dimensions, confluent branch PAs - No evidence of coarctation or PDA
+VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 60-65%) - Right ventricular systolic function: Normal - No regional wall motion abnormalities
+PERICARDIUM: - No pericardial effusion - Normal pericardial thickness
+CORONARY ARTERIES: - Normal origin and course`
+            },
+            ASD: {
+                content: `SECUNDUM ATRIAL SEPTAL DEFECT
+CHAMBERS: - Right atrium: Dilated - Right ventricle: Dilated with volume overload
+- Left atrium: Normal size - Left ventricle: Normal dimensions
+SEPTUM: - Atrial septal defect (secundum type) measuring 15mm - Left-to-right shunt across ASD - Interventricular septum: Intact
+VALVES: - Mitral valve: Normal - Tricuspid valve: Mild functional regurgitation - Aortic valve: Normal - Pulmonary valve: Normal
+VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 60%) - Right ventricular systolic function: Normal
+ESTIMATIONS: - Qp/Qs ratio: 2.1:1 - Mild pulmonary artery hypertension`
+            },
+            PDA: {
+                content: `PATENT DUCTUS ARTERIOSUS
+CHAMBERS: - Left atrium: Dilated - Left ventricle: Dilated with volume overload - Right atrium: Normal size
+- Right ventricle: Normal dimensions
+GREAT VESSELS: - Patent ductus arteriosus measuring 3.5mm - Left-to-right shunt across PDA - Pulmonary artery: Dilated - Aorta: Normal dimensions
+VALVES: - Mitral valve: Normal - Tricuspid valve: Normal - Aortic valve: Normal - Pulmonary valve: Normal
+VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 65%) - Right ventricular systolic function: Normal
+ESTIMATIONS: - Qp/Qs ratio: 1.8:1 - Mild pulmonary artery hypertension`
+            },
+            VSD: {
+                content: `VENTRICULAR SEPTAL DEFECT
+CHAMBERS: - Left atrium: Dilated - Left ventricle: Dilated with volume overload - Right atrium: Normal size
+- Right ventricle: Normal dimensions
+SEPTUM: - Ventricular septal defect (perimembranous) measuring 6mm - Left-to-right shunt across VSD - Interatrial septum: Intact
+VALVES: - Mitral valve: Normal - Tricuspid valve: Normal - Aortic valve: Normal - Pulmonary valve: Normal
+VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 62%) - Right ventricular systolic function: Normal
+ESTIMATIONS: - Qp/Qs ratio: 2.2:1 - Moderate pulmonary artery hypertension`
+            },
+            TOF: {
+                content: `TETRALOGY OF FALLOT
+CHAMBERS: - Right atrium: Normal size - Right ventricle: Hypertrophied - Left atrium: Normal size - Left ventricle: Normal dimensions
+SEPTUM: - Large malalignment ventricular septal defect - Overriding of aorta - Interatrial septum: Intact
+VALVES: - Mitral valve: Normal - Tricuspid valve: Normal - Aortic valve: Overriding - Pulmonary valve: Stenotic with thickened leaflets
+GREAT VESSELS: - Aorta: Overriding, normal dimensions - Pulmonary artery: Narrowed with infundibular stenosis - Branch pulmonary arteries: Confluent but small
+VENTRICULAR FUNCTION: - Left ventricular systolic function: Normal (EF 60%) - Right ventricular systolic function: Normal
+ESTIMATIONS: - Severe right ventricular outflow tract obstruction - Right-to-left shunt across VSD`
+            }
+        };
+
+        // Initialize with sample data if empty
+        if (patients.length === 0) {
+            patients = [
+                {
+                    id: 5041161,
+                    firstName: "Tina",
+                    lastName: "Sharma",
+                    sex: "female",
+                    email: "tina.sharma@example.com",
+                    mobile: "9876543210",
+                    address: "123 Main St, Pune",
+                    dob: "1992-05-15",
+                    weight: 58,
+                    height: 165,
+                    bp: "120/80",
+                    hr: 72,
+                    spo2: 98,
+                    regDate: "2025-04-09"
+                },
+                {
+                    id: 5041162,
+                    firstName: "Raj",
+                    lastName: "Patel",
+                    sex: "male",
+                    email: "raj.patel@example.com",
+                    mobile: "9876543211",
+                    address: "456 Oak St, Mumbai",
+                    dob: "1985-11-22",
+                    weight: 75,
+                    height: 178,
+                    bp: "130/85",
+                    hr: 68,
+                    spo2: 99,
+                    regDate: "2025-04-10"
+                }
+            ];
+            localStorage.setItem('patients', JSON.stringify(patients));
+        }
+
+        if (appointments.length === 0) {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            
+            appointments = [
+                {
+                    id: 1,
+                    patientId: 5041161,
+                    date: today,
+                    time: "09:00",
+                    purpose: "Follow-up",
+                    status: "Confirmed",
+                    notes: "Regular checkup"
+                },
+                {
+                    id: 2,
+                    patientId: 5041162,
+                    date: today,
+                    time: "10:30",
+                    purpose: "Consultation",
+                    status: "Scheduled",
+                    notes: "Initial consultation"
+                }
+            ];
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+        }
+
+        // Update current time and date
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent =
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('current-date').textContent =
+                now.getDate().toString().padStart(2, '0') + '-' +
+                (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                now.getFullYear();
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Generate unique patient ID
+        function generatePatientId() {
+            if (patients.length === 0) return 5041160;
+            return Math.max(...patients.map(p => p.id)) + 1;
+        }
+
+        // Initialize patient ID on page load
+        document.getElementById('patient-id').textContent = generatePatientId();
+
+        // ========== ADMIN PASSWORD FUNCTIONALITY ==========
+
+        document.getElementById('admin-btn').addEventListener('click', function() {
+            if (!isAdmin) {
+                document.getElementById('password-modal').style.display = 'flex';
+            } else {
+                // If already admin, switch to admin view
+                switchToAdminView();
+            }
+        });
+
+        document.getElementById('submit-password').addEventListener('click', function() {
+            const password = document.getElementById('admin-password').value;
+            if (password === '1') {
+                isAdmin = true;
+                document.getElementById('password-modal').style.display = 'none';
+                switchToAdminView();
+                showMessage('Administrator access granted', 'success', 'appointments-section');
+            } else {
+                showMessage('Incorrect password. Please try again.', 'error', 'password-modal');
+                document.getElementById('admin-password').value = '';
+            }
+        });
+
+        function switchToAdminView() {
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('admin-btn').classList.add('active');
+            // Hide Patient Form and Appointments, show only Echo, Consult, Database
+            document.querySelector('.nav-item[data-target="form-section"]').style.display = 'none';
+            document.querySelector('.nav-item[data-target="appointments-section"]').style.display = 'none';
+            document.querySelector('.mobile-nav-item[data-target="form-section"]').style.display = 'none';
+            document.querySelector('.mobile-nav-item[data-target="appointments-section"]').style.display = 'none';
+            
+            // Show admin sections
+            document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'flex');
+            
+            // Switch to echo reports section
+            switchSection('echo-reports-section');
+        }
+
+        document.getElementById('receptionist-btn').addEventListener('click', function() {
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'none');
+            
+            // Show Patient Form and Appointments
+            document.querySelector('.nav-item[data-target="form-section"]').style.display = 'flex';
+            document.querySelector('.nav-item[data-target="appointments-section"]').style.display = 'flex';
+            document.querySelector('.mobile-nav-item[data-target="form-section"]').style.display = 'flex';
+            document.querySelector('.mobile-nav-item[data-target="appointments-section"]').style.display = 'flex';
+            
+            // Switch to form section if on admin section
+            const currentSection = document.querySelector('.section.active');
+            if (currentSection.id === 'echo-reports-section' ||  
+                currentSection.id === 'consultation-section' ||  
+                currentSection.id === 'database-section') {
+                switchSection('form-section');
+            }
+        });
+
+        // Initially hide admin items
+        document.querySelectorAll('.admin-only').forEach(item => item.style.display = 'none');
+
+        // ========== APPOINTMENTS FUNCTIONALITY ==========
+
+        function displayAppointments() {
+            const container = document.getElementById('appointments-table-body');
+            container.innerHTML = '';
+            
+            // Sort by date and time
+            appointments.sort((a, b) => {
+                if (a.date === b.date) {
+                    return a.time.localeCompare(b.time);
+                }
+                return a.date.localeCompare(b.date);
+            });
+            
+            if (appointments.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" class="no-appointments">No appointments found</td></tr>';
+                return;
+            }
+            
+            appointments.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                if (!patient) return;
+                
+                const statusClass = `status-${appointment.status}`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(appointment.date)}</td>
+                    <td>${formatTime(appointment.time)}</td>
+                    <td>${appointment.patientId}</td>
+                    <td>${patient.firstName} ${patient.lastName}</td>
+                    <td>${patient.mobile}</td>
+                    <td>${appointment.purpose}</td>
+                    <td><span class="appointment-status ${statusClass}">${appointment.status.toUpperCase()}</span></td>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        // Format time for display
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.getDate().toString().padStart(2, '0') + '-' +  
+                   (date.getMonth() + 1).toString().padStart(2, '0') + '-' +  
+                   date.getFullYear();
+        }
+
+        // Search appointments and show patient details
+        document.getElementById('search-appointments-btn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('search-appointments').value.trim();
+            if (!searchTerm) {
+                displayAppointments();
+                document.getElementById('appointments-search-results').innerHTML = '';
+                return;
+            }
+
+            // Search for patient
+            let patient = null;
+            
+            // First try exact ID match
+            patient = patients.find(p => p.id.toString() === searchTerm);
+            
+            // If not found by exact ID, try partial ID match
+            if (!patient) {
+                patient = patients.find(p => p.id.toString().includes(searchTerm));
+            }
+            
+            // If still not found, try name search
+            if (!patient) {
+                patient = patients.find(p =>  
+                    `${p.firstName} ${p.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (!patient) {
+                showMessage(`Patient not found with ID/Name: ${searchTerm}`, 'error', 'appointments-search-results');
+                displayAppointments();
+                return;
+            }
+
+            // Display patient details
+            displayPatientDetails(patient);
+            
+            // Filter appointments for this patient
+            const patientAppointments = appointments.filter(a => a.patientId === patient.id);
+            displayFilteredAppointments(patientAppointments);
+        });
+
+        // Display patient details
+        function displayPatientDetails(patient) {
+            const ageInMonths = calculateAgeInMonths(patient.dob);
+            const ageDisplay = ageInMonths < 12 ? `${ageInMonths} months` : `${calculateAge(patient.dob)} years`;
+            
+            const detailsHTML = `
+                <div class="patient-details">
+                    <h3>Patient Details</h3>
+                    <div class="patient-details-grid">
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Patient ID</span>
+                            <span class="patient-detail-value">${patient.id}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Name</span>
+                            <span class="patient-detail-value">${patient.firstName} ${patient.lastName}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Age/Sex</span>
+                            <span class="patient-detail-value">${ageDisplay}/${patient.sex.charAt(0).toUpperCase()}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Mobile</span>
+                            <span class="patient-detail-value">${patient.mobile}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Email</span>
+                            <span class="patient-detail-value">${patient.email || 'N/A'}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Address</span>
+                            <span class="patient-detail-value">${patient.address}</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">Weight/Height</span>
+                            <span class="patient-detail-value">${patient.weight} kg / ${patient.height} cm</span>
+                        </div>
+                        <div class="patient-detail-item">
+                            <span class="patient-detail-label">BP/HR/SpO2</span>
+                            <span class="patient-detail-value">${patient.bp || 'N/A'} / ${patient.hr || 'N/A'} / ${patient.spo2 || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('appointments-search-results').innerHTML = detailsHTML;
+        }
+
+        // Display filtered appointments
+        function displayFilteredAppointments(filteredAppointments) {
+            const container = document.getElementById('appointments-table-body');
+            container.innerHTML = '';
+            
+            if (filteredAppointments.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" class="no-appointments">No appointments found for this patient</td></tr>';
+                return;
+            }
+            
+            filteredAppointments.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                if (!patient) return;
+                
+                const statusClass = `status-${appointment.status}`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(appointment.date)}</td>
+                    <td>${formatTime(appointment.time)}</td>
+                    <td>${appointment.patientId}</td>
+                    <td>${patient.firstName} ${patient.lastName}</td>
+                    <td>${patient.mobile}</td>
+                    <td>${appointment.purpose}</td>
+                    <td><span class="appointment-status ${statusClass}">${appointment.status.toUpperCase()}</span></td>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        // ========== PATIENT FORM FUNCTIONALITY ==========
+
+        // Form submission
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            // Validate form
+            const requiredFields = ['first-name', 'last-name', 'sex', 'mobile', 'address', 'dob', 'weight', 'height', 'appointment-date', 'appointment-time'];
+            let valid = true;
+
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    element.style.borderColor = 'red';
+                    valid = false;
+                } else {
+                    element.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!valid) {
+                showMessage('Please fill all required fields', 'error', 'form-section');
+                return;
+            }
+
+            // Create patient object
+            const patientId = parseInt(document.getElementById('patient-id').textContent);
+            const patient = {
+                id: patientId,
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                sex: document.getElementById('sex').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('mobile').value,
+                address: document.getElementById('address').value,
+                dob: document.getElementById('dob').value,
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseFloat(document.getElementById('height').value),
+                bp: document.getElementById('bp').value,
+                hr: parseInt(document.getElementById('hr').value) || 0,
+                spo2: parseInt(document.getElementById('spo2').value) || 0,
+                regDate: new Date().toISOString().split('T')[0]
+            };
+
+            // Create appointment object
+            const appointment = {
+                id: appointments.length > 0 ? Math.max(...appointments.map(a => a.id)) + 1 : 1,
+                patientId: patientId,
+                date: document.getElementById('appointment-date').value,
+                time: document.getElementById('appointment-time').value,
+                purpose: "Consultation",
+                status: "Scheduled"
+            };
+
+            // Save data
+            patients.push(patient);
+            appointments.push(appointment);
+
+            localStorage.setItem('patients', JSON.stringify(patients));
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            showMessage(`Patient information and appointment submitted successfully! Patient ID: ${patientId}`, 'success', 'form-section');
+
+            // Reset form and generate new ID
+            document.getElementById('patient-id').textContent = generatePatientId();
+            document.getElementById('clear-btn').click();
+
+            // Refresh data in other sections
+            displayAppointments();
+            refreshDatabase();
+            updateStats();
+        });
+
+        // Clear form
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            document.querySelectorAll('#form-section input, #form-section select, #form-section textarea').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('appointment-date').valueAsDate = new Date();
+            document.getElementById('appointment-time').value = '09:00';
+        });
+
+        // Set default appointment date to today
+        document.getElementById('appointment-date').valueAsDate = new Date();
+
+        // ========== DATABASE FUNCTIONALITY ==========
+
+        // Refresh database table
+        function refreshDatabase() {
+            const table = document.getElementById('database-table');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            patients.forEach((patient) => {
+                // Calculate age from DOB
+                const dob = new Date(patient.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.firstName} ${patient.lastName}</td>
+                    <td>${age}</td>
+                    <td>${patient.sex.charAt(0).toUpperCase()}</td>
+                    <td>${patient.mobile}</td>
+                    <td>${patient.regDate}</td>
+                    <td class="action-buttons">
+                        <button class="action-btn delete-btn" onclick="deletePatient(${patient.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-patients').textContent = patients.length;
+
+            const today = new Date();
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            const monthPatients = patients.filter(p => p.regDate >= monthStart).length;
+            document.getElementById('month-patients').textContent = monthPatients;
+
+            const todayStr = today.toISOString().split('T')[0];
+            const todayAppointments = appointments.filter(a => a.date === todayStr).length;
+            document.getElementById('today-appointments').textContent = todayAppointments;
+
+            document.getElementById('due-followups').textContent = '0';
+        }
+
+        // Delete patient
+        function deletePatient(patientId) {
+            if (confirm('Are you sure you want to delete this patient? All associated data will also be deleted.')) {
+                patients = patients.filter(p => p.id !== patientId);
+                appointments = appointments.filter(a => a.patientId !== patientId);
+                echoReports = echoReports.filter(e => e.patientId !== patientId);
+                consultationReports = consultationReports.filter(c => c.patientId !== patientId);
+                
+                localStorage.setItem('patients', JSON.stringify(patients));
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                localStorage.setItem('echoReports', JSON.stringify(echoReports));
+                localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+                
+                refreshDatabase();
+                updateStats();
+                showMessage('Patient deleted successfully', 'success', 'database-section');
+            }
+        }
+
+        // ========== ECHO REPORTS FUNCTIONALITY ==========
+
+        // Echo Reports Search Functionality
+        document.getElementById('echo-search-btn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('echo-patient-search').value.trim();
+            if (!searchTerm) {
+                showMessage('Please enter a Patient ID or Name', 'error', 'echo-search-results');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('echo-report-loading').style.display = 'block';
+            document.getElementById('echo-report-container').style.display = 'none';
+            document.getElementById('echo-controls').style.display = 'none';
+            document.getElementById('echo-buttons').style.display = 'none';
+
+            // Simulate loading delay for better UX
+            setTimeout(() => {
+                // Search for patient
+                let patient = null;
+                
+                // First try exact ID match
+                patient = patients.find(p => p.id.toString() === searchTerm);
+                
+                // If not found by exact ID, try partial ID match
+                if (!patient) {
+                    patient = patients.find(p => p.id.toString().includes(searchTerm));
+                }
+                
+                // If still not found, try name search
+                if (!patient) {
+                    patient = patients.find(p =>  
+                        `${p.firstName} ${p.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        p.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        p.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+
+                if (!patient) {
+                    showMessage(`Patient not found with ID/Name: ${searchTerm}`, 'error', 'echo-search-results');
+                    // Hide report and controls
+                    document.getElementById('echo-report-loading').style.display = 'none';
+                    document.getElementById('echo-report-container').style.display = 'none';
+                    document.getElementById('echo-controls').style.display = 'none';
+                    document.getElementById('echo-buttons').style.display = 'none';
+                    return;
+                }
+
+                displayPatientInfoForEcho(patient);
+                showMessage(`Patient found: ${patient.firstName} ${patient.lastName} (ID: ${patient.id})`, 'success', 'echo-search-results');
+            }, 800);
+        });
+
+        // Display patient information in the echo report
+        function displayPatientInfoForEcho(patient) {
+            const ageInMonths = calculateAgeInMonths(patient.dob);
+            const ageDisplay = ageInMonths < 12 ? `${ageInMonths} months` : `${calculateAge(patient.dob)} years`;
+            
+            // Update patient info in the echo report
+            document.getElementById('echo-patient-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            document.getElementById('echo-report-date').textContent = formatDate(new Date());
+            document.getElementById('echo-patient-age').textContent = `${ageDisplay}/${patient.sex.charAt(0).toUpperCase()}`;
+            document.getElementById('echo-patient-hr').textContent = patient.hr ? `${patient.hr} BPM` : '--';
+            document.getElementById('echo-patient-weight').textContent = patient.weight ? `${patient.weight} Kg` : '--';
+            document.getElementById('echo-patient-bp').textContent = patient.bp || '--';
+            document.getElementById('echo-indication').textContent = 'Incidental Detection of murmur';
+            document.getElementById('echo-referral-doctor').textContent = 'Shubham Bafna Sir';
+
+            // Store the current patient ID for saving
+            document.getElementById('echo-patient-search').setAttribute('data-patient-id', patient.id);
+
+            // Check if there's a saved echo report for this patient
+            const savedReport = echoReports.find(report => report.patientId === patient.id);
+            if (savedReport) {
+                // Load saved report
+                document.getElementById('echo-content').textContent = savedReport.content;
+                showMessage('Loaded saved echo report', 'success', 'echo-search-results');
+            } else {
+                // Load default normal report
+                document.getElementById('echo-content').textContent = echoPresets.Normal.content;
+            }
+
+            // Hide loading and show the report and controls
+            document.getElementById('echo-report-loading').style.display = 'none';
+            showReportWithMobileCheck('echo-report-container');
+            document.getElementById('echo-controls').style.display = 'flex';
+        }
+
+        // Apply echo preset
+        function applyEchoPreset(presetKey) {
+            if (echoPresets[presetKey]) {
+                document.getElementById('echo-content').textContent = echoPresets[presetKey].content;
+                showMessage(`Applied ${presetKey} preset`, 'success', 'echo-search-results');
+            }
+        }
+
+        // Save echo report
+        document.getElementById('echo-save-btn').addEventListener('click', function() {
+            const patientId = document.getElementById('echo-patient-search').getAttribute('data-patient-id');
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error', 'echo-search-results');
+                return;
+            }
+
+            const patient = patients.find(p => p.id.toString() === patientId);
+            if (!patient) {
+                showMessage('Patient not found', 'error', 'echo-search-results');
+                return;
+            }
+
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            this.disabled = true;
+
+            setTimeout(() => {
+                // Create or update echo report
+                const echoReport = {
+                    id: echoReports.length > 0 ? Math.max(...echoReports.map(r => r.id)) + 1 : 1,
+                    patientId: parseInt(patientId),
+                    patientName: `${patient.firstName} ${patient.lastName}`,
+                    date: new Date().toISOString().split('T')[0],
+                    content: document.getElementById('echo-content').textContent
+                };
+
+                // Remove existing report for this patient if exists
+                echoReports = echoReports.filter(r => r.patientId !== parseInt(patientId));
+                echoReports.push(echoReport);
+
+                localStorage.setItem('echoReports', JSON.stringify(echoReports));
+
+                showMessage('Echo report saved successfully', 'success', 'echo-search-results');
+
+                // Restore button state
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }, 1000);
+        });
+
+        // Print echo report
+        document.getElementById('echo-print-btn').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Edit echo report
+        document.getElementById('echo-edit-btn').addEventListener('click', function() {
+            const isEditing = document.getElementById('echo-content').getAttribute('contenteditable') === 'true';
+            
+            if (!isEditing) {
+                // Enable editing
+                document.getElementById('echo-content').setAttribute('contenteditable', 'true');
+                document.getElementById('echo-content').classList.add('edit-mode');
+                document.getElementById('echo-edit-btn').innerHTML = '<i class="fas fa-check"></i> Finish Editing';
+                document.getElementById('echo-buttons').style.display = 'flex';
+                showMessage('Edit mode enabled. You can now edit the echo report content.', 'info', 'echo-search-results');
+                
+                // Add event listeners to echo buttons
+                document.querySelectorAll('.echo-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const text = this.getAttribute('data-text');
+                        insertTextAtCursor(text);
+                    });
+                });
+            } else {
+                // Disable editing
+                document.getElementById('echo-content').setAttribute('contenteditable', 'false');
+                document.getElementById('echo-content').classList.remove('edit-mode');
+                document.getElementById('echo-edit-btn').innerHTML = '<i class="fas fa-edit"></i> Edit Report';
+                document.getElementById('echo-buttons').style.display = 'none';
+                showMessage('Edit mode disabled', 'info', 'echo-search-results');
+            }
+        });
+
+        // Function to insert text at cursor position
+        function insertTextAtCursor(text) {
+            const echoContent = document.getElementById('echo-content');
+            const selection = window.getSelection();
+            
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                const textNode = document.createTextNode(text + '\n\n');
+                range.insertNode(textNode);
+                
+                // Move cursor to end of inserted text
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                // Focus back on the content
+                echoContent.focus();
+            } else {
+                // If no selection, append to the end
+                echoContent.textContent += '\n\n' + text;
+            }
+        }
+
+        // ========== CONSULTATION REPORTS FUNCTIONALITY ==========
+
+        // Consultation Reports Search Functionality
+        document.getElementById('consult-search-btn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('consult-patient-search').value.trim();
+            if (!searchTerm) {
+                showMessage('Please enter a Patient ID or Name', 'error', 'consult-search-results');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('consult-report-loading').style.display = 'block';
+            document.getElementById('consultation-report-container').style.display = 'none';
+
+            // Simulate loading delay for better UX
+            setTimeout(() => {
+                // Search for patient
+                let patient = null;
+                
+                // First try exact ID match
+                patient = patients.find(p => p.id.toString() === searchTerm);
+                
+                // If not found by exact ID, try partial ID match
+                if (!patient) {
+                    patient = patients.find(p => p.id.toString().includes(searchTerm));
+                }
+                
+                // If still not found, try name search
+                if (!patient) {
+                    patient = patients.find(p =>  
+                        `${p.firstName} ${p.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        p.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        p.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                }
+
+                if (!patient) {
+                    showMessage(`Patient not found with ID/Name: ${searchTerm}`, 'error', 'consult-search-results');
+                    // Hide report
+                    document.getElementById('consult-report-loading').style.display = 'none';
+                    document.getElementById('consultation-report-container').style.display = 'none';
+                    return;
+                }
+
+                displayPatientInfoForConsultation(patient);
+                showMessage(`Patient found: ${patient.firstName} ${patient.lastName} (ID: ${patient.id})`, 'success', 'consult-search-results');
+            }, 800);
+        });
+
+        // Display patient information in the consultation report
+        function displayPatientInfoForConsultation(patient) {
+            const ageInMonths = calculateAgeInMonths(patient.dob);
+            const ageDisplay = ageInMonths < 12 ? `${ageInMonths} months` : `${calculateAge(patient.dob)} years`;
+            
+            document.getElementById('consult-patient-name').textContent = `${patient.firstName} ${patient.lastName}`;
+            document.getElementById('consult-report-date').textContent = formatDate(new Date());
+            document.getElementById('consult-patient-age').textContent = `${ageDisplay}/${patient.sex.charAt(0).toUpperCase()}`;
+            document.getElementById('consult-patient-hr').textContent = patient.hr ? `${patient.hr} BPM` : '-';
+            document.getElementById('consult-patient-weight').textContent = patient.weight ? `${patient.weight} Kg` : '--';
+            document.getElementById('consult-patient-spo2').textContent = patient.spo2 ? `${patient.spo2}%` : '--';
+            document.getElementById('consult-indication').textContent = 'Desaturation to rule out CHD';
+            document.getElementById('consult-referral').textContent = 'Sane guruji hospital';
+            
+            // Store the current patient ID for saving
+            document.getElementById('consult-patient-search').setAttribute('data-patient-id', patient.id);
+            
+            // Check if there's a saved consultation report for this patient
+            const savedReport = consultationReports.find(report => report.patientId === patient.id);
+            if (savedReport) {
+                // Load saved report
+                document.getElementById('s1-text').textContent = savedReport.s1Text || 'Normal';
+                document.getElementById('s2-text').textContent = savedReport.s2Text || 'Normal';
+                document.getElementById('murmur-text').textContent = savedReport.murmurText || 'No additional Sound';
+                document.getElementById('indication-text').textContent = savedReport.indicationText || 'Incidental Detection of murmur';
+                document.getElementById('anc-detail').textContent = savedReport.ancDetail || 'Not Significant';
+                document.getElementById('install-detail').textContent = savedReport.installDetail || 'FT/AGA/LSCS/CIAB/B Weight- /No NICU Stay';
+                document.getElementById('device-type').textContent = savedReport.deviceType || 'No Device';
+                document.getElementById('symptoms-list').innerHTML = savedReport.symptoms || '<div class="list-item"><div class="list-item-content" contenteditable="false">Suck-Peat-Suck Cycle</div></div>';
+                document.getElementById('echo-findings').textContent = savedReport.echoFindings || 'Large sized perimenbranous ventricular septal defect with left to right shunt';
+                document.getElementById('ecg-findings').textContent = savedReport.ecgFindings || '-';
+                document.getElementById('medications-list').innerHTML = savedReport.medications || '<div class="list-item"><div class="list-item-content" contenteditable="false">NA</div></div><div class="list-item"><div class="list-item-content" contenteditable="false">NA</div></div>';
+                document.getElementById('advice-list').innerHTML = savedReport.adviceList || '<div class="list-item"><div class="list-item-content" contenteditable="false">Routine Neonatal Care</div></div><div class="list-item"><div class="list-item-content" contenteditable="false">Immunisation as per schedule</div></div><div class="list-item"><div class="list-item-content" contenteditable="false">Avoid Contact Sports X 1 month</div></div><div class="list-item"><div class="list-item-content" contenteditable="false">Regular Diet</div></div><div class="list-item"><div class="list-item-content" contenteditable="false">To Review with Consultant Neonatologist/Pediatrician</div></div>';
+                document.getElementById('next-followup').textContent = savedReport.nextFollowup || '1 week';
+                showMessage('Loaded saved consultation report', 'success', 'consult-search-results');
+            }
+            
+            // Hide loading and show the report
+            document.getElementById('consult-report-loading').style.display = 'none';
+            showReportWithMobileCheck('consultation-report-container');
+            
+            // Initialize consultation functionality
+            initializeConsultationFunctionality();
+        }
+
+        // Initialize consultation functionality
+        function initializeConsultationFunctionality() {
+            // Initialize dropdowns
+            initializeDropdowns();
+            
+            // Initialize calendar
+            initializeCalendar();
+            
+            // Edit mode toggle button
+            document.getElementById('edit-toggle-btn').addEventListener('click', function() {
+                toggleEditMode();
+            });
+            
+            // Save consultation report
+            document.getElementById('consult-save-btn').addEventListener('click', function() {
+                saveConsultationReport();
+            });
+            
+            // Print consultation report
+            document.getElementById('consult-print-btn').addEventListener('click', function() {
+                window.print();
+            });
+        }
+
+        function initializeDropdowns() {
+            // Add click event to all dropdown items
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the target field from the dropdown button's parent
+                    const listItem = this.closest('.list-item');
+                    if (listItem) {
+                        // For list items (symptoms, medications, advice)
+                        const contentDiv = listItem.querySelector('.list-item-content');
+                        if (contentDiv) {
+                            contentDiv.textContent = this.getAttribute('data-value');
+                        }
+                    } else {
+                        // For regular fields
+                        const dropdownButton = this.closest('.dropdown').querySelector('.dropdown-toggle');
+                        const fieldId = dropdownButton.id.replace('-dropdown', '-text');
+                        const targetField = document.getElementById(fieldId);
+                        
+                        if (targetField) {
+                            // Update the field value
+                            targetField.textContent = this.getAttribute('data-value');
+                        }
+                    }
+                });
+            });
+        }
+
+        function initializeCalendar() {
+            let currentDate = new Date();
+            
+            // Update calendar display
+            function updateCalendar() {
+                const monthYear = document.getElementById('current-month');
+                const calendarDates = document.getElementById('calendar-dates');
+                
+                // Set month/year display
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"];
+                monthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+                
+                // Clear previous dates
+                calendarDates.innerHTML = '';
+                
+                // Add day headers
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                days.forEach(day => {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'text-center fw-bold';
+                    dayElement.textContent = day;
+                    calendarDates.appendChild(dayElement);
+                });
+                
+                // Get first day of month and number of days
+                const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+                const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+                
+                // Add empty cells for days before the first day of the month
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'p-2';
+                    calendarDates.appendChild(emptyCell);
+                }
+                
+                // Add days of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'p-2 text-center border rounded';
+                    dayElement.textContent = day;
+                    dayElement.style.cursor = 'pointer';
+                    
+                    dayElement.addEventListener('click', function() {
+                        const selectedDate = `${day} ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+                        document.getElementById('next-followup').textContent = selectedDate;
+                        
+                        // Close the dropdown
+                        const dropdown = document.querySelector('.dropdown-menu.show');
+                        if (dropdown) {
+                            const bsDropdown = new bootstrap.Dropdown(document.getElementById('calendar-btn'));
+                            bsDropdown.hide();
+                        }
+                    });
+                    
+                    calendarDates.appendChild(dayElement);
+                }
+            }
+            
+            // Previous month button
+            document.getElementById('prev-month').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCalendar();
+            });
+            
+            // Next month button
+            document.getElementById('next-month').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCalendar();
+            });
+            
+            // Set custom date button
+            document.getElementById('set-custom-date').addEventListener('click', function() {
+                const customDate = prompt('Enter custom follow-up date (e.g., "2 weeks", "1 month", "15 Oct 2023"):');
+                if (customDate) {
+                    document.getElementById('next-followup').textContent = customDate;
+                    
+                    // Close the dropdown
+                    const dropdown = document.querySelector('.dropdown-menu.show');
+                    if (dropdown) {
+                        const bsDropdown = new bootstrap.Dropdown(document.getElementById('calendar-btn'));
+                        bsDropdown.hide();
+                    }
+                }
+            });
+            
+            // Initial calendar setup
+            updateCalendar();
+        }
+
+        function toggleEditMode() {
+            const container = document.getElementById('consultation-report-container');
+            const isEditing = container.classList.contains('edit-mode');
+            const editBtn = document.getElementById('edit-toggle-btn');
+            
+            if (!isEditing) {
+                // Enable edit mode
+                container.classList.add('edit-mode');
+                
+                // Make all field values editable
+                document.querySelectorAll('.field-value, .list-item-content').forEach(field => {
+                    field.setAttribute('contenteditable', 'true');
+                });
+                
+                // Show dropdown buttons
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.style.display = 'block';
+                });
+                
+                editBtn.innerHTML = '<i class="fas fa-check"></i> Disable Edit Mode';
+                editBtn.classList.remove('btn-primary');
+                editBtn.classList.add('btn-danger');
+            } else {
+                // Disable edit mode
+                container.classList.remove('edit-mode');
+                
+                // Make all field values non-editable
+                document.querySelectorAll('.field-value, .list-item-content').forEach(field => {
+                    field.setAttribute('contenteditable', 'false');
+                });
+                
+                // Hide dropdown buttons
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+                
+                editBtn.innerHTML = '<i class="fas fa-edit"></i> Enable Edit Mode';
+                editBtn.classList.remove('btn-danger');
+                editBtn.classList.add('btn-primary');
+            }
+        }
+
+        function saveConsultationReport() {
+            const patientId = document.getElementById('consult-patient-search').getAttribute('data-patient-id');
+            if (!patientId) {
+                showMessage('Please search for a patient first', 'error', 'consult-search-results');
+                return;
+            }
+
+            const patient = patients.find(p => p.id.toString() === patientId);
+            if (!patient) {
+                showMessage('Patient not found', 'error', 'consult-search-results');
+                return;
+            }
+
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            this.disabled = true;
+
+            setTimeout(() => {
+                // Create or update consultation report
+                const consultationReport = {
+                    id: consultationReports.length > 0 ? Math.max(...consultationReports.map(r => r.id)) + 1 : 1,
+                    patientId: parseInt(patientId),
+                    patientName: `${patient.firstName} ${patient.lastName}`,
+                    date: new Date().toISOString().split('T')[0],
+                    s1Text: document.getElementById('s1-text').textContent,
+                    s2Text: document.getElementById('s2-text').textContent,
+                    murmurText: document.getElementById('murmur-text').textContent,
+                    indicationText: document.getElementById('indication-text').textContent,
+                    ancDetail: document.getElementById('anc-detail').textContent,
+                    installDetail: document.getElementById('install-detail').textContent,
+                    deviceType: document.getElementById('device-type').textContent,
+                    symptoms: document.getElementById('symptoms-list').innerHTML,
+                    echoFindings: document.getElementById('echo-findings').textContent,
+                    ecgFindings: document.getElementById('ecg-findings').textContent,
+                    medications: document.getElementById('medications-list').innerHTML,
+                    adviceList: document.getElementById('advice-list').innerHTML,
+                    nextFollowup: document.getElementById('next-followup').textContent
+                };
+
+                // Remove existing report for this patient if exists
+                consultationReports = consultationReports.filter(r => r.patientId !== parseInt(patientId));
+                consultationReports.push(consultationReport);
+
+                localStorage.setItem('consultationReports', JSON.stringify(consultationReports));
+
+                showMessage('Consultation report saved successfully', 'success', 'consult-search-results');
+
+                // Restore button state
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }, 1000);
+        }
+
+        // ========== EXPORT ALL DATA TO EXCEL ==========
+
+        document.getElementById('export-all-data-btn').addEventListener('click', function() {
+            // Create CSV data for all patients
+            const csvData = [
+                ['Patient ID', 'First Name', 'Last Name', 'Sex', 'Email', 'Mobile', 'Address', 'Date of Birth', 'Weight', 'Height', 'BP', 'HR', 'SpO2', 'Registration Date']
+            ];
+
+            // Add patient data
+            patients.forEach(patient => {
+                csvData.push([
+                    patient.id,
+                    patient.firstName,
+                    patient.lastName,
+                    patient.sex,
+                    patient.email,
+                    patient.mobile,
+                    patient.address,
+                    patient.dob,
+                    patient.weight,
+                    patient.height,
+                    patient.bp,
+                    patient.hr,
+                    patient.spo2,
+                    patient.regDate
+                ]);
+            });
+
+            // Add empty row
+            csvData.push([]);
+
+            // Add appointments data
+            csvData.push(['Appointment ID', 'Patient ID', 'Date', 'Time', 'Purpose', 'Status', 'Notes']);
+            appointments.forEach(appointment => {
+                csvData.push([
+                    appointment.id,
+                    appointment.patientId,
+                    appointment.date,
+                    appointment.time,
+                    appointment.purpose,
+                    appointment.status,
+                    appointment.notes || ''
+                ]);
+            });
+
+            // Add empty row
+            csvData.push([]);
+
+            // Add echo reports data
+            csvData.push(['Echo Report ID', 'Patient ID', 'Patient Name', 'Date', 'Content']);
+            echoReports.forEach(report => {
+                csvData.push([
+                    report.id,
+                    report.patientId,
+                    report.patientName,
+                    report.date,
+                    report.content
+                ]);
+            });
+
+            // Add empty row
+            csvData.push([]);
+
+            // Add consultation reports data
+            csvData.push(['Consultation Report ID', 'Patient ID', 'Patient Name', 'Date', 'S1', 'S2', 'MURMUR', 'Indication', 'ANC Detail', 'Install Detail', 'Device Type', 'Symptoms', 'ECHO Findings', 'ECG Findings', 'Medications', 'Advice', 'Next Follow-up']);
+            consultationReports.forEach(report => {
+                csvData.push([
+                    report.id,
+                    report.patientId,
+                    report.patientName,
+                    report.date,
+                    report.s1Text,
+                    report.s2Text,
+                    report.murmurText,
+                    report.indicationText,
+                    report.ancDetail,
+                    report.installDetail,
+                    report.deviceType,
+                    report.symptoms,
+                    report.echoFindings,
+                    report.ecgFindings,
+                    report.medications,
+                    report.adviceList,
+                    report.nextFollowup
+                ]);
+            });
+
+            // Convert to CSV string
+            const csvString = csvData.map(row => 
+                row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+
+            // Create and download CSV file
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `medical_office_data_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showMessage('All data exported to CSV successfully', 'success', 'database-section');
+        });
+
+        // ========== HELPER FUNCTIONS ==========
+
+        // Calculate age from DOB
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Calculate age in months for infants
+        function calculateAgeInMonths(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
+            months -= birthDate.getMonth();
+            months += today.getMonth();
+            return months <= 0 ? 0 : months;
+        }
+
+        // Show message function
+        function showMessage(message, type, containerId) {
+            let container;
+            if (containerId === 'password-modal') {
+                container = document.getElementById('password-modal').querySelector('.password-content');
+            } else {
+                container = document.getElementById(containerId);
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+                ${message}
+            `;
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Display patient dropdown
+        function displayPatientDropdown(patientList, dropdown, targetInputId) {
+            dropdown.innerHTML = '';
+            
+            if (patientList.length === 0) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            patientList.forEach(patient => {
+                const option = document.createElement('div');
+                option.className = 'patient-option';
+                option.innerHTML = `
+                    <strong>${patient.id}</strong> - ${patient.firstName} ${patient.lastName}  
+                    (${patient.sex}, ${calculateAge(patient.dob)} years)
+                `;
+                option.addEventListener('click', function() {
+                    document.getElementById(targetInputId).value = `${patient.firstName} ${patient.lastName} (ID: ${patient.id})`;
+                    dropdown.style.display = 'none';
+                });
+                dropdown.appendChild(option);
+            });
+
+            dropdown.style.display = 'block';
+        }
+
+        // Patient search functionality for echo reports
+        document.getElementById('echo-patient-search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const dropdown = document.getElementById('echo-patient-dropdown');
+            
+            if (searchTerm.length < 2) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const filteredPatients = patients.filter(patient =>  
+                patient.id.toString().includes(searchTerm) ||
+                `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchTerm) ||
+                patient.mobile.includes(searchTerm)
+            );
+
+            displayPatientDropdown(filteredPatients, dropdown, 'echo-patient-search');
+        });
+
+        // Patient search functionality for consultation reports
+        document.getElementById('consult-patient-search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const dropdown = document.getElementById('consult-patient-dropdown');
+            
+            if (searchTerm.length < 2) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const filteredPatients = patients.filter(patient =>  
+                patient.id.toString().includes(searchTerm) ||
+                `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchTerm) ||
+                patient.mobile.includes(searchTerm)
+            );
+
+            displayPatientDropdown(filteredPatients, dropdown, 'consult-patient-search');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdowns = document.querySelectorAll('.patient-dropdown');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.contains(e.target) && !e.target.closest('.search-box input')) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        });
+
+        // ========== MOBILE REPORT OPTIMIZATION ==========
+
+        // Function to show report with proper mobile handling
+        function showReportWithMobileCheck(reportContainerId) {
+            const reportContainer = document.getElementById(reportContainerId);
+            if (!reportContainer) return;
+            
+            // Show the report
+            reportContainer.style.display = 'block';
+            
+            // Scroll to report on mobile
+            if (window.innerWidth <= 767) {
+                setTimeout(() => {
+                    const container = reportContainer.closest('.report-container-mobile');
+                    if (container) {
+                        container.scrollIntoView({  
+                            behavior: 'smooth',  
+                            block: 'start'  
+                        });
+                    }
+                }, 100);
+            }
+        }
+
+        // ========== NAVIGATION FUNCTIONALITY ==========
+
+        // Navigation functionality
+        function switchSection(targetId) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`.nav-item[data-target="${targetId}"]`)?.classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            
+            // Update mobile nav
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`.mobile-nav-item[data-target="${targetId}"]`).classList.add('active');
+            
+            // Refresh data when switching to these sections
+            if (targetId === 'database-section') {
+                refreshDatabase();
+                updateStats();
+            } else if (targetId === 'appointments-section') {
+                displayAppointments();
+            } else if (targetId === 'echo-reports-section') {
+                // Reset echo reports view
+                document.getElementById('echo-patient-search').value = '';
+                document.getElementById('echo-patient-search').removeAttribute('data-patient-id');
+                document.getElementById('echo-report-container').style.display = 'none';
+                document.getElementById('echo-controls').style.display = 'none';
+                document.getElementById('echo-buttons').style.display = 'none';
+                document.getElementById('echo-search-results').innerHTML = '';
+                document.getElementById('echo-report-loading').style.display = 'none';
+            } else if (targetId === 'consultation-section') {
+                // Reset consultation reports view
+                document.getElementById('consult-patient-search').value = '';
+                document.getElementById('consult-patient-search').removeAttribute('data-patient-id');
+                document.getElementById('consultation-report-container').style.display = 'none';
+                document.getElementById('consult-search-results').innerHTML = '';
+                document.getElementById('consult-report-loading').style.display = 'none';
+                
+                // Remove edit indicators if any
+                document.querySelectorAll('.edit-indicator').forEach(indicator => {
+                    indicator.remove();
+                });
+                
+                // Hide dropdowns
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            }
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                switchSection(target);
+            });
+        });
+
+        // Mobile navigation
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = this.getAttribute('data-target');
+                switchSection(target);
+            });
+        });
+
+        // Initialize data displays
+        displayAppointments();
+        refreshDatabase();
+        updateStats();
+
+        // Test the search with sample patient IDs
+        console.log('Available patient IDs:', patients.map(p => p.id));
+    </script>
+</body>
+</html>
